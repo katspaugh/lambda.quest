@@ -1,0 +1,31 @@
+body, html {
+  margin: 0;
+  padding: 0;
+}
+
+.grid {
+  display: flex;
+}
+
+#code {
+  flex: 1;
+  padding: 1em;
+  margin: 1em;
+}
+
+#canvas {
+  width: 500px;
+  height: 500px;
+  border: 1px solid #ddd;
+  margin: 1em;
+}
+
+#terminal {
+  padding: 2em;
+  background: #000;
+}
+
+footer {
+  padding: 2em;
+  text-align: center;
+}
