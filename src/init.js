@@ -97,7 +97,7 @@
 
   Promise.all([
     fetch('./scheme/canvas.scm').then(resp => resp.text()),
-    fetch('./scheme/demo.scm').then(resp => resp.text())
+    fetch('./scheme/heaven.scm').then(resp => resp.text())
   ]).then(([ canvasCode, demoCode ]) => {
     gambitEval(canvasCode + demoCode)
     preloadedKeywords = extractKeywords(canvasCode)

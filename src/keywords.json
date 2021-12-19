@@ -983,10 +983,5 @@
   "readtable-max-unescaped-char",
   "readtable-max-unescaped-char-set",
   "readtable-start-syntax",
-  "readtable-start-syntax-set",
-  "c-declare",
-  "c-initialize",
-  "c-lambda",
-  "c-define",
-  "c-define-type"
+  "readtable-start-syntax-set"
 ]

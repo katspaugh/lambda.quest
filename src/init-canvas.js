@@ -6,7 +6,7 @@
 
   const drawLoop = () => {
     stack.reduce((prev, next) => prev.then(next), Promise.resolve())
-      .then(() => setTimeout(drawLoop, 16))
+      .then(() => window.requestAnimationFrame(drawLoop))
   }
 
   window._draw = (callback) => {
