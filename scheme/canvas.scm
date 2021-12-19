@@ -2,7 +2,7 @@
 
 (define (canvas-call method . rest)
   (jseval (string-append
-           "canvasCtx."
+           "_draw(ctx => ctx."
            (symbol->string method)
            "("
            (apply string-append (map
@@ -11,7 +11,7 @@
                                     (if (number? x) (number->string x) (symbol->string x))
                                     ", "))
                                  rest))
-           ")")))
+           "))")))
 
 (define (canvas-beginPath)
   (canvas-call 'beginPath))
@@ -33,18 +33,29 @@
 
 (define (canvas-clear)
   (canvas-call 'clearRect 0 0
-               (string->number (jseval "canvasCtx.canvas.width"))
-               (string->number (jseval "canvasCtx.canvas.height"))))
+               (string->number (jseval "_ctx.canvas.width"))
+               (string->number (jseval "_ctx.canvas.height"))))
+
+(define (canvas-sleep seconds)
+  (jseval (string-append "_drawSleep(" (number->string seconds) ")")))
 
 
 ;; Example drawing
 (canvas-clear)
 (canvas-beginPath)
-(canvas-arc 75 75 50 0 (* PI 2) 'true) ; Outer circle
-(canvas-moveTo 110 75)
-(canvas-arc 75 75 35 0 PI 'false) ; Mouth (clockwise)
 (canvas-moveTo 65 65)
 (canvas-arc 60 65 5 0 (* PI 2) 'true) ; Left eye
+(canvas-fill)
+(canvas-sleep 0.3)
 (canvas-moveTo 95 65)
 (canvas-arc 90 65 5 0 (* PI 2) 'true) ; Right eye
+(canvas-fill)
+(canvas-sleep 0.3)
+(canvas-moveTo 125 75)
+(canvas-arc 75 75 50 0 (* PI 2) 'true) ; Outer circle
 (canvas-stroke)
+(canvas-sleep 0.3)
+(canvas-moveTo 110 75)
+(canvas-arc 75 75 35 0 PI 'false) ; Mouth (clockwise)
+(canvas-stroke)
+(canvas-sleep 1)

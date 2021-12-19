@@ -3,13 +3,19 @@ body, html {
   padding: 0;
 }
 
-.grid {
-  display: flex;
+* {
+  box-sizing: border-box;
 }
 
-#code {
+.grid {
+  display: flex;
   flex: 1;
-  padding: 1em;
+  width: 100vw;
+  min-height: 500px;
+}
+
+#container {
+  flex: 1;
   margin: 1em;
 }
 
@@ -25,7 +31,25 @@ body, html {
   background: #000;
 }
 
-footer {
-  padding: 2em;
+.layout {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  height: 100vh;
+}
+
+header {
+  padding: 1em;
   text-align: center;
+  font-family: sans-serif;
+  font-size: 12px;
+  color: #fff;
+  background-color: #333;
+}
+
+footer {
+  padding: 1em;
+  text-align: center;
+  font-family: sans-serif;
+  font-size: 12px;
 }

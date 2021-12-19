@@ -5,6 +5,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/xterm.min.css" integrity="sha512-iLYuqv+v/P4u9erpk+KM83Ioe/l7SEmr7wB6g+Kg1qmEit8EShDKnKtLHlv2QXUp7GGJhmqDI+1PhJYLTsfb8w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.14.5/xterm.min.js" integrity="sha512-2PRgAav8Os8vLcOAh1gSaDoNLe1fAyq8/G3QSdyjFFD+OqNjLeHE/8q4+S4MEZgPsuo+itHopj+hJvqS8XUQ8A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.32.0-dev.20211218/min/vs/loader.min.js" integrity="sha512-O9SYDgWAM3bEzit1z6mkFd+dxKUplO/oB8UwYGAkg2Zy/WzDUQ2mYA/ysk3c0CxiXAN4u8T9JeZ0Ahk2Jj/33Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
     <script src="lib/intf.js"></script>
     <script src="lib/gsi.js"></script>
 
@@ -12,21 +14,28 @@
   </head>
 
   <body>
-    <div class="grid">
-      <textarea id="code" spellcheck="false"></textarea>
+    <div class="layout">
+      <header>
+        lambda.quest
+      </header>
 
-      <canvas id="canvas" width="1000" height="1000"></canvas>
+      <div class="grid">
+        <div id="container"></div>
+
+        <canvas id="canvas" width="1000" height="1000"></canvas>
+      </div>
+
+      <div id="terminal"></div>
+
+      <footer>
+        This site was built using the following open-source softwares:
+        <a href="https://github.com/feeley/gambit">Gambit Scheme</a>.
+        <a href="https://github.com/kripken/emscripten/wiki">Emscripten</a>,
+        and <a href="https://xtermjs.org/">XTerm.js</a>,
+      </footer>
     </div>
 
-    <div id="terminal"></div>
-
-    <footer>
-      This site was built using the following open-source softwares:
-      <a href="https://github.com/feeley/gambit">Gambit Scheme</a>.
-      <a href="https://github.com/kripken/emscripten/wiki">Emscripten</a>,
-      and <a href="https://xtermjs.org/">XTerm.js</a>,
-    </footer>
-
+    <script src="src/init-canvas.js"></script>
     <script src="src/init.js"></script>
   </body>
 </html>
