@@ -1,14 +1,9 @@
 (() => {
-  const initAutocomplete = (monaco, editor, keywords) => {
-    const { languages } = monaco
+  let userKeywords = []
+  let preloadedKeywords = []
 
-    languages.setLanguageConfiguration('scheme', {
-      wordPattern: /[\w\-\.:<>\*][\w\d\.\\/\-\?<>\*!]+/,
-      indentationRules: {
-        decreaseIndentPattern: undefined,
-        increaseIndentPattern: /^\s*\(.*[^)]\s*$/
-      }
-    })
+  const updateSuggestions = (monaco, builtInKeywords) => {
+    const { languages } = monaco
 
     languages.registerCompletionItemProvider('scheme', {
       provideCompletionItems: (model, position) => {
@@ -29,11 +24,16 @@
           endColumn: position.column
         }
 
-        const matching = keywords.filter(item => item.startsWith(word))
+        const matching = userKeywords
+              .concat(preloadedKeywords)
+              .concat(builtInKeywords)
+              .filter(item => item.startsWith(word))
 
         const suggestions = matching.map(item => ({
           label: item,
-          kind: languages.CompletionItemKind.Snippet,
+          kind: userKeywords.includes(item) ?
+            languages.CompletionItemKind.Function :
+            languages.CompletionItemKind.Keyword,
           insertText: item,
           range: range,
         }))
@@ -45,13 +45,35 @@
     })
   }
 
+  const initAutocomplete = (monaco) => {
+    monaco.languages.setLanguageConfiguration('scheme', {
+      wordPattern: /[\w\-\.:<>\*][\w\d\.\\/\-\?<>\*!]+/,
+      indentationRules: {
+        decreaseIndentPattern: undefined,
+        increaseIndentPattern: /^\s*\(.*[^)]\s*$/
+      }
+    })
+
+    // Load built-in definitions
+    fetch('./src/keywords.json').then(resp => resp.json()).then(keywords => {
+      updateSuggestions(monaco, keywords)
+    })
+  }
+
+  const extractKeywords = (code) => {
+    return code.match(/\(define \(?([^ )]+)/ig).map((s) => s.split(/ \(?/)[1])
+  }
+
   const initEditor = (code) => {
     require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.32.0-dev.20211218/min/vs' } });
 
 	  require(['vs/editor/editor.main'], () => {
+      initAutocomplete(monaco)
+
 	    const editor = monaco.editor.create(document.getElementById('container'), {
 		    value: code,
-		    language: 'scheme'
+		    language: 'scheme',
+        autoClosingBrackets: false
 	    });
 
       let debounce
@@ -66,12 +88,9 @@
           if (openParens.length === closeParens.length) {
             _drawCleanup()
             gambitEval(value)
+            userKeywords = extractKeywords(value)
           }
         }, 300)
-      })
-
-      fetch('./src/keywords.json').then(resp => resp.json()).then(keywords => {
-        initAutocomplete(monaco, editor, keywords)
       })
     })
   }
@@ -81,6 +100,8 @@
     fetch('./scheme/demo.scm').then(resp => resp.text())
   ]).then(([ canvasCode, demoCode ]) => {
     gambitEval(canvasCode + demoCode)
+    preloadedKeywords = extractKeywords(canvasCode)
+    userKeywords = extractKeywords(demoCode)
     initEditor(demoCode)
   })
 })()
