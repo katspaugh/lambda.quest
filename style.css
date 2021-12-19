@@ -22,8 +22,10 @@ body, html {
 #canvas {
   width: 500px;
   height: 500px;
-  border: 1px solid #ddd;
+  border: 1px solid #EDEDEC;
+  border-radius: 6px;
   margin: 1em;
+  margin-left: 0;
 }
 
 #terminal {
@@ -42,9 +44,10 @@ header {
   padding: 1em;
   text-align: center;
   font-family: sans-serif;
+  font-weight: bold;
   font-size: 12px;
   color: #fff;
-  background-color: #333;
+  background: linear-gradient(to right, #3a6186, #89253e);
 }
 
 footer {
@@ -52,4 +55,10 @@ footer {
   text-align: center;
   font-family: sans-serif;
   font-size: 12px;
+  color: #ccc;
+  background: linear-gradient(to left, #3a6186, #89253e);
+}
+
+footer a {
+  color: #fff;
 }
