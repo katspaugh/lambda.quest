@@ -2,6 +2,14 @@
   const initAutocomplete = (monaco, editor, keywords) => {
     const { languages } = monaco
 
+    languages.setLanguageConfiguration('scheme', {
+      wordPattern: /[\w\-\.:<>\*][\w\d\.\\/\-\?<>\*!]+/,
+      indentationRules: {
+        decreaseIndentPattern: undefined,
+        increaseIndentPattern: /^\s*\(.*[^)]\s*$/
+      }
+    })
+
     languages.registerCompletionItemProvider('scheme', {
       provideCompletionItems: (model, position) => {
         const textUntilPosition = model.getValueInRange({
