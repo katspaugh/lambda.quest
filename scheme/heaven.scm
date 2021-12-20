@@ -29,37 +29,60 @@
       (heaven-create name)))
 
 
-;; You are a ghost in heaven
+;; Display code
+(canvas-setFont "70px serif")
+
+(define (heaven-log text line-offset)
+  (canvas-fillText text 30 (* 150 line-offset))
+  (canvas-sleep 1))
+
+(define (heaven-log-all)
+  (canvas-sleep 2)
+  (canvas-clear)
+  (heaven-log
+   (string-append
+    "You are a "
+    (symbol->string heaven-my-name)
+    " in a "
+    (symbol->string (car (car heaven)))
+    ".")
+   1)
+
+  (if (eq? '() (heaven-contents))
+      (heaven-log "You see nothing." 2)
+      (let ((count 0))
+        (heaven-log "You see:" 2)
+        (map
+         (lambda (x)
+           (set! count (+ 1 count))
+           (heaven-log
+            (string-append " · " (symbol->string x))
+            (+ 2 (* count 0.7))))
+         (heaven-contents)))))
+
+
+;; Let's begin
+
+;; 1. Intro
+(heaven-log "Hello." 1)
+(heaven-log-all)
+
+;; 2. Create a ship
 (heaven-create 'ship)
+(heaven-log-all)
+
+;; 3. Enter the ship and create things therein
 (heaven-enter 'ship)
 (heaven-create 'table)
 (heaven-create 'computer)
-(heaven-enter 'computer)
+(heaven-log-all)
+
+;; 4. Become a program and enter the computer
 (heaven-become 'program)
+(heaven-enter 'computer)
+(heaven-log-all)
+
+;; 5. Leave the computer
 (heaven-leave)
-
-
-;; Display code
-(canvas-clear)
-(canvas-setFont "70px serif")
-
-(canvas-fillText
- (string-append
-  "You are a "
-  (symbol->string heaven-my-name)
-  " in a "
-  (symbol->string (car (car heaven)))
-  ".")
- 30 100)
-
-(if (eq? '() (heaven-contents))
-    (canvas-fillText "You see nothing." 30 250)
-    (let ((count 0))
-      (canvas-fillText "You see:" 30 250)
-      (map
-       (lambda (x)
-         (set! count (+ 1 count))
-         (canvas-fillText
-          (string-append " · " (symbol->string x))
-          30 (+ 280 (* 80 count))))
-       (heaven-contents))))
+(heaven-log-all)
+(heaven-log "You are now free." 5)

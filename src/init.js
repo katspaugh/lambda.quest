@@ -61,7 +61,13 @@
   }
 
   const extractKeywords = (code) => {
-    return code.match(/\(define \(?([^ )]+)/ig).map((s) => s.split(/ \(?/)[1])
+    return (code.match(/\(define \(?([^ )]+)/ig) || []).map((s) => s.split(/ \(?/)[1])
+  }
+
+  const evalAndDraw = (code) => {
+    _drawCleanup()
+    _gambitEval(code)
+    setTimeout(_drawLoop, 100)
   }
 
   const initEditor = (code) => {
@@ -86,8 +92,7 @@
           const openParens = value.match(/[(]/g) || []
           const closeParens = value.match(/[)]/g) || []
           if (openParens.length === closeParens.length) {
-            _drawCleanup()
-            gambitEval(value)
+            evalAndDraw(value)
             userKeywords = extractKeywords(value)
           }
         }, 300)
@@ -99,7 +104,7 @@
     fetch('./scheme/canvas.scm').then(resp => resp.text()),
     fetch('./scheme/heaven.scm').then(resp => resp.text())
   ]).then(([ canvasCode, demoCode ]) => {
-    gambitEval(canvasCode + demoCode)
+    evalAndDraw(canvasCode + demoCode)
     preloadedKeywords = extractKeywords(canvasCode)
     userKeywords = extractKeywords(demoCode)
     initEditor(demoCode)

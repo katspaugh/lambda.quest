@@ -20,9 +20,10 @@
    (canvas-sleep 0.3)
    (canvas-moveTo 110 75)
    (canvas-arc 75 75 35 0 π 'false) ; Mouth (clockwise)
-   (canvas-stroke)
-   (canvas-closePath)))
+   (canvas-closePath)
+   (canvas-stroke)))
 
 (canvas-clear)
 (draw-smiley-face)
 (canvas-sleep 1)
+(canvas-loop)

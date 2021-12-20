@@ -1,5 +1,5 @@
 (define (canvas-stringify val)
-  (if (string? val) (string-append "'" val "'")
+  (if (string? val) (string-append "'" val "'") ;; @FIXME: escape single quotes
       (if (number? val) (number->string val)
           (symbol->string val))))
 
@@ -22,6 +22,9 @@
 
 (define (canvas-sleep seconds)
   (jseval (string-append "_drawSleep(" (number->string seconds) ")")))
+
+(define (canvas-loop)
+  (jseval "_drawStartLoop()"))
 
 (define (canvas-beginPath)
   (canvas-call 'beginPath))
