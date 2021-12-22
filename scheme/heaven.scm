@@ -5,7 +5,7 @@
 
 (define heaven (cons (heaven-make 'heaven) '()))
 
-(define heaven-my-name 'ghost)
+(define heaven-me 'ghost)
 
 (define (heaven-current) (cdr (car heaven)))
 
@@ -24,7 +24,7 @@
   (set! heaven (cdr heaven)))
 
 (define (heaven-become name)
-  (set! heaven-my-name name)
+  (set! heaven-me name)
   (if (not (heaven-find name))
       (heaven-create name)))
 
@@ -37,12 +37,12 @@
   (canvas-sleep 1))
 
 (define (heaven-log-all)
-  (canvas-sleep 2)
   (canvas-clear)
+  (canvas-sleep 0.5)
   (heaven-log
    (string-append
     "You are a "
-    (symbol->string heaven-my-name)
+    (symbol->string heaven-me)
     " in a "
     (symbol->string (car (car heaven)))
     ".")
@@ -58,13 +58,15 @@
            (heaven-log
             (string-append " · " (symbol->string x))
             (+ 2 (* count 0.7))))
-         (heaven-contents)))))
+         (heaven-contents))))
+  (canvas-sleep 2))
 
 
 ;; Let's begin
 
 ;; 1. Intro
 (heaven-log "Hello." 1)
+(canvas-sleep 2)
 (heaven-log-all)
 
 ;; 2. Create a ship
@@ -86,3 +88,6 @@
 (heaven-leave)
 (heaven-log-all)
 (heaven-log "You are now free." 5)
+(canvas-sleep 10)
+(canvas-clear)
+

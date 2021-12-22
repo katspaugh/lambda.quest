@@ -23,9 +23,6 @@
 (define (canvas-sleep seconds)
   (jseval (string-append "_drawSleep(" (number->string seconds) ")")))
 
-(define (canvas-loop)
-  (jseval "_drawStartLoop()"))
-
 (define (canvas-beginPath)
   (canvas-call 'beginPath))
 

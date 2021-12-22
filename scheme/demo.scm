@@ -26,4 +26,3 @@
 (canvas-clear)
 (draw-smiley-face)
 (canvas-sleep 1)
-(canvas-loop)
