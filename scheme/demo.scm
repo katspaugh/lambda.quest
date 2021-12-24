@@ -23,6 +23,7 @@
    (canvas-closePath)
    (canvas-stroke)))
 
+(canvas-loop) ; start an animation loop
 (canvas-clear)
 (draw-smiley-face)
 (canvas-sleep 1)

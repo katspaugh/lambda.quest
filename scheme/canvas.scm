@@ -1,11 +1,14 @@
+(define (canvas-eval code)
+  (jseval (string-append "postMessage([`" code "`])")))
+
 (define (canvas-stringify val)
-  (if (string? val) (string-append "'" val "'") ;; @FIXME: escape single quotes
+  (if (string? val) (string-append "\"" val "\"") ;; @FIXME: escape double quotes
       (if (number? val) (number->string val)
           (symbol->string val))))
 
 (define (canvas-call method . rest)
-  (jseval (string-append
-           "_draw(ctx => ctx."
+  (canvas-eval (string-append
+           "draw(ctx => ctx."
            (symbol->string method)
            "("
            (apply string-append
@@ -14,14 +17,14 @@
                    rest))
            "))")))
 
-(define (canvas-get prop)
-  (jseval (string-append "_ctx." (symbol->string prop))))
-
 (define (canvas-set prop value)
-  (jseval (string-append "_draw(ctx => ctx." (symbol->string prop) " = " (canvas-stringify value) ")")))
+  (canvas-eval (string-append "draw(ctx => ctx." (symbol->string prop) " = " (canvas-stringify value) ")")))
 
 (define (canvas-sleep seconds)
-  (jseval (string-append "_drawSleep(" (number->string seconds) ")")))
+  (canvas-eval (string-append "drawSleep(" (number->string seconds) ")")))
+
+(define (canvas-loop)
+  (canvas-eval "drawStartLoop()"))
 
 (define (canvas-beginPath)
   (canvas-call 'beginPath))
@@ -54,6 +57,4 @@
   (canvas-call 'fillText text x y))
 
 (define (canvas-clear)
-  (canvas-call 'clearRect 0 0
-               (string->number (canvas-get 'canvas.width))
-               (string->number (canvas-get 'canvas.height))))
+  (canvas-call 'clearRect 0 0 1000000 1000000))

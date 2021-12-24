@@ -3,6 +3,8 @@ Lambda Quest
 
 Live coding Scheme environment in the browser
 
+Try it: https://lambda.quest
+
 ### Features
 * Live coding as you type
 * Asynchronous Canvas rendering loop

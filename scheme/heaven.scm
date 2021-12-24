@@ -30,42 +30,38 @@
 
 
 ;; Display code
-(canvas-setFont "70px serif")
 
-(define (heaven-log text line-offset)
-  (canvas-fillText text 30 (* 150 line-offset))
+(define (heaven-log line-offset . rest)
+  (canvas-setFont "70px serif")
+  (canvas-fillText (apply string-append rest) 30 (* 150 line-offset))
   (canvas-sleep 1))
 
 (define (heaven-log-all)
   (canvas-clear)
   (canvas-sleep 0.5)
-  (heaven-log
-   (string-append
-    "You are a "
-    (symbol->string heaven-me)
-    " in a "
-    (symbol->string (car (car heaven)))
-    ".")
-   1)
 
-  (if (eq? '() (heaven-contents))
-      (heaven-log "You see nothing." 2)
-      (let ((count 0))
-        (heaven-log "You see:" 2)
-        (map
-         (lambda (x)
-           (set! count (+ 1 count))
-           (heaven-log
-            (string-append " · " (symbol->string x))
-            (+ 2 (* count 0.7))))
-         (heaven-contents))))
-  (canvas-sleep 2))
+  (let ((who (symbol->string heaven-me))
+        (where (symbol->string (car (car heaven)))))
+    (heaven-log 1 "You are a " who " in a " where ".")
+
+    (if (eq? '() (heaven-contents))
+        (heaven-log 2 "You see nothing.")
+        (let ((count 0))
+          (heaven-log 2 "You see:")
+          (map
+           (lambda (x)
+             (set! count (+ 1 count))
+             (heaven-log
+              (+ 2 (* count 0.7))
+              " · " (symbol->string x)))
+           (heaven-contents))))
+    (canvas-sleep 2)))
 
 
 ;; Let's begin
 
 ;; 1. Intro
-(heaven-log "Hello." 1)
+(heaven-log 1 "Hello.")
 (canvas-sleep 2)
 (heaven-log-all)
 
@@ -87,7 +83,10 @@
 ;; 5. Leave the computer
 (heaven-leave)
 (heaven-log-all)
-(heaven-log "You are now free." 5)
-(canvas-sleep 10)
-(canvas-clear)
+(heaven-log 5 "You're now free.")
 
+
+;; You can now interact with the REPL
+;; E.g. type:
+;; (heaven-become 'human)
+;; (heaven-log-all)

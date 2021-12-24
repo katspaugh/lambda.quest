@@ -1,10 +1,18 @@
+import { gambitWorker, initTerminal } from './terminal.js'
 import { initEditor } from './editor.js'
 import { drawReset } from './canvas.js'
+import './draw-intf.js'
+
+const gambitEval = (code) => {
+  gambitWorker().postMessage(code + '\r\n')
+}
 
 const evalAndDraw = (code) => {
   drawReset()
-  _gambitEval(code)
+  gambitEval(code)
 }
+
+initTerminal()
 
 Promise.all([
   fetch('./scheme/canvas.scm').then(resp => resp.text()),
