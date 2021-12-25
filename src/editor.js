@@ -91,7 +91,7 @@ export const initEditor = (canvasCode, demoCode, onChange) => {
     const model = editor.getModel()
     model.onDidChangeContent((e) => {
       // @TODO: eval only the changed expressions
-      //console.log(e.changes)
+      // console.log(e.changes)
 
       if (debounce) clearTimeout(debounce)
 
