@@ -1,5 +1,6 @@
 let userKeywords = []
 let preloadedKeywords = []
+let editor = ''
 
 const updateSuggestions = (monaco, builtInKeywords) => {
   const { languages } = monaco
@@ -63,13 +64,24 @@ const extractKeywords = (code) => {
   return (code.match(/\(define \(?([^ )]+)/ig) || []).map((s) => s.split(/ \(?/)[1])
 }
 
-export const initEditor = (canvasCode, demoCode, onChange) => {
+export const getContent = () => {
+  return editor ? editor.getModel().getValue() : ''
+}
+
+export const setContent = (newContent) => {
+  if (!editor) {
+    setTimeout(() => setContent(newContent), 10)
+  } else {
+    editor.getModel().setValue(newContent)
+  }
+}
+
+export const initEditor = (preloadedCode, onChange) => {
+  preloadedKeywords = extractKeywords(preloadedCode)
+
   require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.32.0-dev.20211218/min/vs' } });
 
 	require(['vs/editor/editor.main'], () => {
-    preloadedKeywords = extractKeywords(canvasCode)
-    userKeywords = extractKeywords(demoCode)
-
     initAutocomplete(monaco)
 
     let theme = 'vs'
@@ -77,22 +89,16 @@ export const initEditor = (canvasCode, demoCode, onChange) => {
       theme = 'vs-dark'
     }
 
-	  const editor = monaco.editor.create(document.getElementById('container'), {
-		  value: demoCode,
+	  const monacoEditor = monaco.editor.create(document.getElementById('container'), {
 		  language: 'scheme',
       autoClosingBrackets: false,
-      minimap: {
-        enabled: false
-      },
+      minimap: { enabled: false },
       theme
 	  });
 
     let debounce
-    const model = editor.getModel()
+    const model = monacoEditor.getModel()
     model.onDidChangeContent((e) => {
-      // @TODO: eval only the changed expressions
-      // console.log(e.changes)
-
       if (debounce) clearTimeout(debounce)
 
       debounce = setTimeout(() => {
@@ -105,5 +111,8 @@ export const initEditor = (canvasCode, demoCode, onChange) => {
         }
       }, 300)
     })
+
+    // Export
+    editor = monacoEditor
   })
 }

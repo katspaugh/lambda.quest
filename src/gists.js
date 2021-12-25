@@ -90,6 +90,10 @@ export const updateGist = (id, content) => {
 }
 
 export const readGist = (id) => {
-  return fetchJson(`${GISTS_API_URL}/${id}`)
+  return fetchJson(`${GISTS_API_URL}/${id}`, {
+    method: 'GET',
+    mode: 'cors',
+    cache: 'no-cache'
+  })
     .then(data => data.files[FILE_NAME].content)
 }

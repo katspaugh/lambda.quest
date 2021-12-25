@@ -3,10 +3,13 @@
  * @see https://workers.cloudflare.com/built-with/projects/github-oauth-login
  */
 
-const AUTH_URL = 'https://lambda-quest.katspaugh.workers.dev/' // 'https://worker.lambda.quest/'
-const STORAGE_KEY = 'LQ_githubToken'
+import { getContent, setContent } from './editor.js'
 
-let token = localStorage.getItem(STORAGE_KEY)
+const AUTH_URL = 'https://worker.lambda.quest/'
+const TOKEN_KEY = 'LQ_githubToken'
+const EDITOR_KEY = 'LQ_editorContent'
+
+let token = localStorage.getItem(TOKEN_KEY)
 
 export const isAuthed = () => {
   return !!token
@@ -14,16 +17,18 @@ export const isAuthed = () => {
 
 export const auth = () => {
   if (!token) {
+    // Save the editor state before redirecting
+    sessionStorage.setItem(EDITOR_KEY, getContent())
+
+    // Redirect to the auth worker
     location.href = AUTH_URL
-    if (!token) throw Error('User not authenticated')
   }
   return token
 }
 
-export const logout = (reload = true) => {
+export const logout = () => {
   token = ''
-  localStorage.removeItem(STORAGE_KEY)
-  if (reload) location.reload()
+  localStorage.removeItem(TOKEN_KEY)
 }
 
 const login = async (code, onLogin) => {
@@ -47,7 +52,7 @@ const login = async (code, onLogin) => {
     token = result.token
 
     // save the token
-    localStorage.setItem(STORAGE_KEY, token)
+    localStorage.setItem(TOKEN_KEY, token)
 
     onLogin()
   } catch (error) {
@@ -62,5 +67,10 @@ export const tryLogin = (onLogin) => {
     const path = location.pathname + location.search.replace(/\bcode=\w+/, '').replace(/\?$/, '')
     history.pushState({}, '', path)
     login(code, onLogin)
+
+    // Restore the editor state
+    const state = sessionStorage.getItem(EDITOR_KEY)
+    if (state != null) setContent(state)
+    sessionStorage.removeItem(EDITOR_KEY)
   }
 }
