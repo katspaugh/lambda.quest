@@ -1,5 +1,5 @@
 import { h, render } from 'https://unpkg.com/htm/preact/index.mjs?module'
-import { useState, useEffect } from 'https://unpkg.com/preact/hooks/dist/hooks.mjs?module'
+import { useState, useEffect, useMemo } from 'https://unpkg.com/preact/hooks/dist/hooks.mjs?module'
 import htm from 'https://unpkg.com/htm?module'
 import { createGist, updateGist, readGist, getUser, getAllGists } from './gists.js'
 import { isAuthed, logout, tryLogin } from './github-auth.js'
@@ -90,13 +90,23 @@ const UserInfo = ({ name, avatar }) => {
 }
 
 const UserGists = ({ gists }) => {
+  const defaultGists = useMemo(() => [{
+    'id':'2e53d106a5e27b49fcc50eb89c149078',
+    'files': {'heaven.scm': ''}
+  }, {
+    'id':'b4abd68b853cf24009e8ff1c0b63d9f6',
+    'files':{'smiley-face.scm': ''}
+  }], [])
+
+  const allGists = gists.concat(defaultGists)
+
   const gistName = (gist, index) => {
     return `${index + 1}. ${Object.keys(gist.files)[0]}`
   }
 
   const onChange = (e) => {
     const index = e.target.value
-    const gistItem = gists[index]
+    const gistItem = allGists[index]
 
     if (gistItem) {
       if (!confirm('Load the gist without saving the code?')) return
@@ -105,12 +115,12 @@ const UserGists = ({ gists }) => {
     }
   }
 
-  return !gists ? null : html`
+  return html`
     <span class="user-gists">
       <select onChange=${onChange}>
-        <option value=${-1}>Load gist</option>
+        <option value=${-1}>Load a gist</option>
         <option disabled>─</option>
-        ${gists.map((gist, index) => html`
+        ${allGists.map((gist, index) => html`
           <option value=${index}>${gistName(gist, index)}</option>
         `)}
       </select>
@@ -171,7 +181,8 @@ const Menu = () => {
     } else {
       tryLogin(() => {
         onLogin()
-        // Login was initiated by onSaveClick
+        // Login was initiated by onSaveClick,
+        // so we need to finish the job after a reload
         onSaveClick(setGistId)
       })
     }
