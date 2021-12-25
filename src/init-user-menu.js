@@ -1,13 +1,13 @@
 import { h, render } from 'https://unpkg.com/htm/preact/index.mjs?module'
 import { useState, useEffect } from 'https://unpkg.com/preact/hooks/dist/hooks.mjs?module'
 import htm from 'https://unpkg.com/htm?module'
-import { createGist, updateGist, readGist, getUser } from './gists.js'
+import { createGist, updateGist, readGist, getUser, getAllGists } from './gists.js'
 import { isAuthed, logout, tryLogin } from './github-auth.js'
-import { getContent } from './editor.js'
+import { getContent, setContent } from './editor.js'
 
 // Initialize htm with Preact
 const html = htm.bind(h)
-let alert = x => x
+let alert = console.log
 
 const setUrlGistId = (id) => {
   const path = `${location.pathname}?gist=${id}`
@@ -26,8 +26,8 @@ export const getSavedGist = async () => {
   try {
     return await readGist(gistId)
   } catch (err) {
-    console.log('Error reading gist, redirecting to /')
-    history.pushState({}, '', location.pathname)
+    console.log('Error reading gist:', err.message)
+    //history.pushState({}, '', location.pathname)
     throw err
   }
 }
@@ -39,7 +39,7 @@ const onSaveClick = (onDone) => {
     .then(data => {
       setUrlGistId(data.id)
       onDone(data.id)
-      alert(`Gist saved at ${data.html_url}`)
+      alert(`Gist created`)
     }).catch(err => {
       console.log('Error creating gist:', err.message)
       alert(err.info ? err.info.message : err.message)
@@ -59,7 +59,7 @@ const onUpdateClick = () => {
     })
 }
 
-const onCreateClick = (editState) => {
+const onCreateClick = () => {
   if (!confirm('Leave the page without saving?')) return
 
   const currentCode = ';; New gist'
@@ -89,14 +89,44 @@ const UserInfo = ({ name, avatar }) => {
   `
 }
 
+const UserGists = ({ gists }) => {
+  const gistName = (gist, index) => {
+    return `${index + 1}. ${Object.keys(gist.files)[0]}`
+  }
+
+  const onChange = (e) => {
+    const index = e.target.value
+    const gistItem = gists[index]
+
+    if (gistItem) {
+      if (!confirm('Load the gist without saving the code?')) return
+      setUrlGistId(gistItem.id)
+      location.reload()
+    }
+  }
+
+  return !gists ? null : html`
+    <span class="user-gists">
+      <select onChange=${onChange}>
+        <option value=${-1}>Load gist</option>
+        <option disabled>─</option>
+        ${gists.map((gist, index) => html`
+          <option value=${index}>${gistName(gist, index)}</option>
+        `)}
+      </select>
+    </span>
+  `
+}
+
 const Alert = (props) => {
   return html`
     <div class="alert" onClick=${props.onClick}>${props.text}</div>
   `
 }
 
-const Menu = ({ editState }) => {
+const Menu = () => {
   const [userInfo, setUserInfo] = useState({})
+  const [gists, setGists] = useState([])
   const [authed, setAuthed] = useState(false)
   const [gistId, setGistId] = useState(getUrlGistId() || '')
   const [alertText, setAlertText] = useState('')
@@ -116,7 +146,13 @@ const Menu = ({ editState }) => {
 
   useEffect(() => {
     const onLogin = () => {
-      return getUser()
+      getAllGists()
+        .then(setGists)
+        .catch((err) => {
+          console.log('Error fetching user gists:', err.message)
+        })
+
+      getUser()
         .then(data => {
           setUserInfo(data)
           setAuthed(true)
@@ -139,7 +175,7 @@ const Menu = ({ editState }) => {
         onSaveClick(setGistId)
       })
     }
-  }, [setUserInfo, setAuthed])
+  }, [setUserInfo, setGists, setAuthed])
 
   const actionLinks = authed && gistId ? html`
     <${Link} text="Create new gist" onClick=${onClick(onCreateClick)} />
@@ -163,15 +199,16 @@ const Menu = ({ editState }) => {
     </div>
 
     <div>
+      <${UserGists} gists=${gists} />
       ${actionLinks}
       ${notification}
     </div>
   `
 }
 
-export const initGistSaving = (editState) => {
+export const initGistSaving = () => {
   render(
-    html`<${Menu} editState=${editState} />`,
+    html`<${Menu} />`,
     document.getElementById('menu')
   )
 }

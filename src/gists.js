@@ -3,7 +3,6 @@ import { auth } from './github-auth.js'
 const BASE_API_URL = 'https://api.github.com'
 const GISTS_API_URL = `${BASE_API_URL}/gists`
 const USER_API_URL = `${BASE_API_URL}/user`
-const FILE_NAME = 'lambda-quest.scm'
 
 const fetchJson = (url, params) => {
   let ok, status
@@ -25,6 +24,13 @@ const fetchJson = (url, params) => {
     })
 }
 
+const getFileName = (content) => {
+  return content
+    .split('\n')[0].trim()
+    .replace(/[^\w ]+/g, '')
+    .slice(0, 30) || 'lambda-quest.scm'
+}
+
 export const getUser = async () => {
   const token = auth()
 
@@ -42,6 +48,7 @@ export const getUser = async () => {
 
 export const createGist = (content) => {
   const token = auth()
+  const fileName = getFileName(content)
 
   return fetchJson(GISTS_API_URL, {
     method: 'POST',
@@ -59,7 +66,7 @@ export const createGist = (content) => {
       description: 'Lambda Quest snippet – https://lambda.quest',
       public: true,
       files: {
-        [FILE_NAME]: { content }
+        [fileName]: { content }
       }
     })
   })
@@ -67,6 +74,7 @@ export const createGist = (content) => {
 
 export const updateGist = (id, content) => {
   const token = auth()
+  const fileName = getFileName(content)
 
   return fetchJson(`${GISTS_API_URL}/${id}`, {
     method: 'PATCH',
@@ -83,17 +91,32 @@ export const updateGist = (id, content) => {
     body: JSON.stringify({
       description: `Lambda Quest snippet – https://lambda.quest?gist=${id}`,
       files: {
-        [FILE_NAME]: { content }
+        [fileName]: { content }
       }
     })
   })
 }
 
-export const readGist = (id) => {
-  return fetchJson(`${GISTS_API_URL}/${id}`, {
+export const getAllGists = () => {
+  const token = auth()
+
+  return fetchJson(`${GISTS_API_URL}?per_page=100`, {
     method: 'GET',
     mode: 'cors',
-    cache: 'no-cache'
+    cache: 'no-cache',
+    credentials: 'same-origin',
+    headers: {
+      'Content-Type': 'application/json',
+      accept: 'application/vnd.github.v3+json',
+      authorization: `token ${token}`
+    },
+    redirect: 'follow',
+    referrerPolicy: 'no-referrer'
   })
-    .then(data => data.files[FILE_NAME].content)
+    .then(data => data.filter(d => Object.keys(d.files).some(key => key.endsWith('.scm'))))
+}
+
+export const readGist = (id) => {
+  return fetchJson(`${GISTS_API_URL}/${id}`)
+    .then(data => Object.values(data.files)[0].content)
 }

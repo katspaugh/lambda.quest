@@ -98,6 +98,7 @@ header h1 {
   overflow: hidden;
 }
 
+.menu select,
 .menu a {
   margin: 0 0.5em;
 }
@@ -157,7 +158,8 @@ footer a {
   font-size: 20px;
   cursor: pointer;
   text-align: left;
-  width: 40vw;
+  min-width: 30vw;
+  max-width: 40vw;
   max-height: 15vh;
   overflow: auto;
   animation: fadeIn 100ms ease-in;
