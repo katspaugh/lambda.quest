@@ -1,7 +1,7 @@
 import { gambitWorker, initTerminal } from './terminal.js'
 import { initEditor } from './editor.js'
 import { drawReset } from './canvas.js'
-import './draw-intf.js'
+import './canvas-rpc.js'
 
 const gambitEval = (code) => {
   gambitWorker().postMessage(code + '\r\n')
