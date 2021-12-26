@@ -3,7 +3,7 @@ import { useState, useEffect, useMemo } from 'https://unpkg.com/preact/hooks/dis
 import htm from 'https://unpkg.com/htm?module'
 import { createGist, updateGist, readGist, getUser, getAllGists } from './gists.js'
 import { isAuthed, logout, tryLogin } from './github-auth.js'
-import { getContent, setContent } from './editor.js'
+import { getContent } from './editor.js'
 
 // Initialize htm with Preact
 const html = htm.bind(h)

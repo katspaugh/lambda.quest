@@ -10,7 +10,8 @@
                   (map
                    (lambda (x) (string-append (canvas-stringify x) ", "))
                    rest))
-           "])")))
+           "])"))
+  (void))
 
 (define (canvas-call method . rest)
   (apply canvas-eval (append (list "ctx-call" (symbol->string method)) rest)))

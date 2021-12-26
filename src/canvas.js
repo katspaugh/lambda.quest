@@ -28,14 +28,12 @@ export const drawSleep = (seconds) => {
 }
 
 export const drawStartLoop = () => {
-  looping = true
+  draw(() => looping = true)
 }
 
 const drawLoop = () => {
   requestId = window.requestAnimationFrame(() => {
-    drawQueue().then(() => {
-      drawLoop()
-    })
+    drawQueue().then(drawLoop)
   })
 }
 
@@ -44,6 +42,7 @@ export const drawReset = () => {
   timeouts.forEach(id => clearTimeout(id))
   timeouts.length = 0
   queue.length = 0
+  looping = false
   ctx.clearRect(0, 0, canvas.width, canvas.height)
   drawLoop()
 }
