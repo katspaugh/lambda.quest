@@ -160,8 +160,9 @@ footer a {
   text-align: left;
   min-width: 30vw;
   max-width: 40vw;
-  max-height: 15vh;
+  max-height: 5em;
   overflow: auto;
+  white-space: pre-line;
   animation: fadeIn 100ms ease-in;
 }
 

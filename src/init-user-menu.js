@@ -26,8 +26,9 @@ export const getSavedGist = async () => {
   try {
     return await readGist(gistId)
   } catch (err) {
+    alert(`Error reading the gist\n${err.info ? err.info.message : err.message}`)
     console.log('Error reading gist:', err.message)
-    //history.pushState({}, '', location.pathname)
+    history.pushState({}, '', location.pathname)
     throw err
   }
 }
@@ -42,7 +43,7 @@ const onSaveClick = (onDone) => {
       alert(`Gist created`)
     }).catch(err => {
       console.log('Error creating gist:', err.message)
-      alert(err.info ? err.info.message : err.message)
+      alert(`Error creating a gist\n${err.info ? err.info.message : err.message}`)
     })
 }
 
@@ -55,12 +56,12 @@ const onUpdateClick = () => {
       alert(`Gist updated`)
     }).catch(err => {
       console.log('Error updating gist:', err.message)
-      alert(err.info ? err.info.message : err.message)
+      alert(`Error updating the gist\n${err.info ? err.info.message : err.message}`)
     })
 }
 
 const onCreateClick = () => {
-  if (!confirm('Leave the page without saving?')) return
+  if (!confirm('Discard latest edits?')) return
 
   const currentCode = ';; New gist'
 
@@ -70,7 +71,7 @@ const onCreateClick = () => {
       location.reload()
     }).catch(err => {
       console.log('Error creating gist:', err.message)
-      alert(err.info ? err.info.message : err.message)
+      alert(`Error creating a new gist\n${err.info ? err.info.message : err.message}`)
     })
 }
 
@@ -99,6 +100,7 @@ const UserGists = ({ gists }) => {
   }], [])
 
   const allGists = gists.concat(defaultGists)
+  const initialId = getUrlGistId()
 
   const gistName = (gist, index) => {
     return `${index + 1}. ${Object.keys(gist.files)[0]}`
@@ -109,9 +111,9 @@ const UserGists = ({ gists }) => {
     const gistItem = allGists[index]
 
     if (gistItem) {
-      if (!confirm('Load the gist without saving the code?')) return
+      //if (!confirm('Discard latest edits?')) return
       setUrlGistId(gistItem.id)
-      location.reload()
+      location.reload() // @TODO: avoid reloading the page
     }
   }
 
@@ -121,7 +123,9 @@ const UserGists = ({ gists }) => {
         <option value=${-1}>Load a gist</option>
         <option disabled>─</option>
         ${allGists.map((gist, index) => html`
-          <option value=${index}>${gistName(gist, index)}</option>
+          <option value=${index} defaultSelected=${gist.id === initialId}>
+            ${gistName(gist, index)}
+          </option>
         `)}
       </select>
     </span>

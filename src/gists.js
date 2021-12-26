@@ -25,10 +25,11 @@ const fetchJson = (url, params) => {
 }
 
 const getFileName = (content) => {
-  return content
-    .split('\n')[0].trim()
-    .replace(/[^\w ]+/g, '')
-    .slice(0, 30) || 'lambda-quest.scm'
+  const name = content
+        .split('\n')[0].trim()
+        .replace(/[^\w ]+/g, '')
+        .slice(0, 30) || 'lambda-quest'
+  return `${name}.scm`
 }
 
 export const getUser = async () => {
