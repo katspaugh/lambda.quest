@@ -1,5 +1,7 @@
 ;; Three beating oscillators
 
+;; Click anywhere on the page to start the audio
+
 ;; Make an oscillator
 (define (osc-make type freq)
   (let ((osc (audio-call audio-ctx 'createOscillator)))
@@ -39,9 +41,8 @@
 (audio-sleep 0.1)
 (osc-detune osc3 20)
 (audio-sleep 0.1)
-(osc-detune osc3 -20)
+(osc-detune osc3 -120)
 
-;; Click anywhere on the page to start the audio
 
 ;; You can now live-program the oscillators from the REPL
 ;; E.g. type:

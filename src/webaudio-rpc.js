@@ -100,7 +100,7 @@ gambitWorker().addEventListener('message', (e) => {
     let result
 
     if (op === OPS.get) {
-      result = obj[path]
+      result = path != null ? obj[path] : obj
     } else if (op === OPS.call) {
       if (isBreakout(obj[path])) return
       result = obj[path](...rest)

@@ -97,6 +97,9 @@ const UserGists = ({ gists }) => {
   }, {
     'id':'b4abd68b853cf24009e8ff1c0b63d9f6',
     'files':{'smiley-face.scm': ''}
+  }, {
+    'id': '1c236778faf87ed2ffceee825e6ca333',
+    'files':{'oscillators.scm': ''}
   }], [])
 
   const allGists = gists.concat(defaultGists)
