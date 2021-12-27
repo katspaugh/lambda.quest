@@ -100,13 +100,17 @@ const UserGists = ({ gists }) => {
   }, {
     'id': '1c236778faf87ed2ffceee825e6ca333',
     'files':{'oscillators.scm': ''}
+  }, {
+    'id': '8eb332073b3b29ace1e2855dfdbad98f',
+    'files':{'rhythm.scm': ''}
   }], [])
 
   const allGists = gists.concat(defaultGists)
   const initialId = getUrlGistId()
 
   const gistName = (gist, index) => {
-    return `${index + 1}. ${Object.keys(gist.files)[0]}`
+    const name = Object.keys(gist.files)[0]
+    return index == null ? name : `${index + 1}. ${name}`
   }
 
   const onChange = (e) => {
@@ -124,12 +128,19 @@ const UserGists = ({ gists }) => {
     <span class="user-gists">
       <select onChange=${onChange}>
         <option value=${-1}>Load a gist</option>
-        <option disabled>─</option>
-        ${allGists.map((gist, index) => html`
+        ${gists.length ? html`<option disabled>─</option>` : null}
+        ${gists.map((gist, index) => html`
           <option value=${index} defaultSelected=${gist.id === initialId}>
             ${gistName(gist, index)}
           </option>
         `)}
+        <optgroup label="Examples">
+          ${defaultGists.map((gist, index) => html`
+            <option value=${index} defaultSelected=${gist.id === initialId}>
+              ${gistName(gist)}
+            </option>
+          `)}
+         </optgroup>
       </select>
     </span>
   `
