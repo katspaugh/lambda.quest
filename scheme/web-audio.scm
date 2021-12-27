@@ -21,16 +21,16 @@
            "])"))
   (void))
 
-(define (audio-sleep ms)
-  (audio-eval (list "sleep" ms)))
-
-(define (audio-loop toggle)
-  (audio-eval (list "loop" toggle)))
+(define (audio-delay func ms)
+  (audio-eval (list "delay" (symbol->string func) ms)))
 
 (define (audio-call id path . rest)
   (let ((new-id (audio-get-id)))
     (audio-eval (append (list "call" id new-id (symbol->string path)) rest))
     new-id))
+
+(define (audio-call! id path . rest)
+  (audio-eval (append (list "call" id "" (symbol->string path)) rest)))
 
 (define (audio-get id path)
   (let ((new-id (audio-get-id)))

@@ -32,7 +32,7 @@ Promise.all(
 
 // Load a gist or the default demo code
 getSavedGist()
-  .catch(() => fetch('./scheme/heaven.scm').then(resp => resp.text()))
+  .catch(() => fetch('./scheme/oscillators.scm').then(resp => resp.text()))
   .then(code => {
     setContent(code)
   })
