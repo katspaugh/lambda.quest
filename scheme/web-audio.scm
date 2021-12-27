@@ -21,8 +21,8 @@
            "])"))
   (void))
 
-(define (audio-sleep seconds)
-  (audio-eval (list "sleep" seconds)))
+(define (audio-sleep ms)
+  (audio-eval (list "sleep" ms)))
 
 (define (audio-loop toggle)
   (audio-eval (list "loop" toggle)))

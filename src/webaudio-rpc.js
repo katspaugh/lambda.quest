@@ -21,9 +21,9 @@ const scheduleCall = (callback) => {
   }))
 }
 
-const scheduleSleep = (seconds) => {
+const scheduleSleep = (ms) => {
   addToQueue(() => new Promise(resolve => {
-    timeouts.push(setTimeout(resolve, seconds * 1000))
+    timeouts.push(setTimeout(resolve, ms))
   }))
 }
 
@@ -37,6 +37,7 @@ const isBreakout = (obj) => {
   return obj === window
     || obj === document
     || obj instanceof HTMLElement
+    || obj instanceof Node
 }
 
 export const restartAudio = async () => {
@@ -68,7 +69,12 @@ gambitWorker().addEventListener('message', (e) => {
   }
 
   if (!objects.id_0) {
-    objects = { id_0: new (window.AudioContext || window.webkitAudioContext)() }
+    try {
+      objects = { id_0: new (window.AudioContext || window.webkitAudioContext)() }
+    } catch (err) {
+      console.log('Error creating a Web Audio context', err)
+      return
+    }
   }
 
   const op = e.data[1]
@@ -118,6 +124,10 @@ gambitWorker().addEventListener('message', (e) => {
 document.addEventListener('click', () => {
   const ctx = objects.id_0
   if (ctx && ctx.state === 'suspended') {
-    ctx.resume()
+    try {
+      ctx.resume()
+    } catch (err) {
+      console.log('Error resuming Web Audio', err)
+    }
   }
 }, { once: true })

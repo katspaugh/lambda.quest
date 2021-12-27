@@ -165,12 +165,3 @@ footer a {
   white-space: pre-line;
   animation: fadeIn 100ms ease-in;
 }
-
-.alert:after {
-  content: '❌';
-  position: absolute;
-  top: 7px;
-  right: 12px;
-  filter: saturate(0) brightness(10);
-  font-size: 12px;
-}
