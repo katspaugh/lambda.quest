@@ -1,37 +1,14 @@
 import { h, render } from 'https://unpkg.com/htm/preact/index.mjs?module'
 import { useState, useEffect, useMemo } from 'https://unpkg.com/preact/hooks/dist/hooks.mjs?module'
 import htm from 'https://unpkg.com/htm?module'
-import { createGist, updateGist, readGist, getUser, getAllGists } from './gists.js'
+import { createGist, updateGist, getUser, getAllGists } from './gists.js'
 import { isAuthed, logout, tryLogin } from './github-auth.js'
 import { getContent } from './editor.js'
+import { getUrlGistId, setUrlGistId } from './url.js'
 
 // Initialize htm with Preact
 const html = htm.bind(h)
 let alert = console.log
-
-const setUrlGistId = (id) => {
-  const path = `${location.pathname}?gist=${id}`
-  history.pushState({}, '', path)
-}
-
-const getUrlGistId = () => {
-  return new URL(location.href).searchParams.get('gist')
-}
-
-export const getSavedGist = async () => {
-  const gistId = getUrlGistId()
-  if (!gistId) {
-    throw new Error('No gist id')
-  }
-  try {
-    return await readGist(gistId)
-  } catch (err) {
-    alert(`Error reading the gist\n${err.info ? err.info.message : err.message}`)
-    console.log('Error reading gist:', err.message)
-    history.pushState({}, '', location.pathname)
-    throw err
-  }
-}
 
 const onSaveClick = (onDone) => {
   const currentCode = getContent()

@@ -11,6 +11,9 @@ const isBreakout = (obj) => {
 }
 
 export const restartAudio = async () => {
+  // Reset setTimeout callbacks
+  gambitWorker().postMessage(`(set! audio-callbacks '())\r\n`)
+
   // Clear timeoutes
   timeouts.forEach(id => clearTimeout(id))
   timeouts = []
@@ -43,17 +46,15 @@ gambitWorker().addEventListener('message', (e) => {
     }
   }
 
-  console.log(e.data, Object.keys(objects).length)
-
   const op = e.data[1]
 
   if (op === OPS.delay) {
-    const schemeFn = e.data[2]
+    const schemeExpr = e.data[2]
     const delayMs = e.data[3]
 
     timeouts.push(
       setTimeout(() => {
-        gambitWorker().postMessage(`(${schemeFn})` + '\r\n')
+        gambitWorker().postMessage(`(${schemeExpr})` + '\r\n')
       }, delayMs)
     )
 

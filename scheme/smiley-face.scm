@@ -24,5 +24,6 @@
 
 (canvas-loop) ; start an animation loop
 (canvas-clear)
+(canvas-sleep 0.5)
 (draw-smiley-face)
 (canvas-sleep 1)

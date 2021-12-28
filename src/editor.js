@@ -2,6 +2,8 @@ let userKeywords = []
 let preloadedKeywords = []
 let editor = ''
 
+const SESSION_KEY = 'LQ_editorContent'
+
 const updateSuggestions = (monaco, builtInKeywords) => {
   const { languages } = monaco
 
@@ -73,6 +75,17 @@ export const setContent = (newContent) => {
     setTimeout(() => setContent(newContent), 10)
   } else {
     editor.getModel().setValue(newContent)
+  }
+}
+
+export const sessionSave = () => {
+  sessionStorage.setItem(SESSION_KEY, getContent())
+}
+
+export const sessionRestore = () => {
+  const content = sessionStorage.getItem(SESSION_KEY)
+  if (content != null) {
+    setContent(content)
   }
 }
 

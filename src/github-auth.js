@@ -3,11 +3,12 @@
  * @see https://workers.cloudflare.com/built-with/projects/github-oauth-login
  */
 
-import { getContent, setContent } from './editor.js'
+import { sessionSave, sessionRestore } from './editor.js'
+import { clearQueryParam, getQueryParam } from './url.js'
 
 const AUTH_URL = 'https://worker.lambda.quest/'
 const TOKEN_KEY = 'LQ_githubToken'
-const EDITOR_KEY = 'LQ_editorContent'
+const CODE_PARAM = 'code'
 
 let token = localStorage.getItem(TOKEN_KEY)
 
@@ -18,7 +19,7 @@ export const isAuthed = () => {
 export const auth = () => {
   if (!token) {
     // Save the editor state before redirecting
-    sessionStorage.setItem(EDITOR_KEY, getContent())
+    sessionSave()
 
     // Redirect to the auth worker
     location.href = AUTH_URL
@@ -62,15 +63,12 @@ const login = async (code, onLogin) => {
 }
 
 export const tryLogin = (onLogin) => {
-  const code = new URL(location.href).searchParams.get('code')
+  const code = getQueryParam(CODE_PARAM)
   if (code) {
-    const path = location.pathname + location.search.replace(/\bcode=\w+/, '').replace(/\?$/, '')
-    history.pushState({}, '', path)
+    clearQueryParam(CODE_PARAM)
     login(code, onLogin)
 
     // Restore the editor state
-    const state = sessionStorage.getItem(EDITOR_KEY)
-    if (state != null) setContent(state)
-    sessionStorage.removeItem(EDITOR_KEY)
+    sessionRestore()
   }
 }
