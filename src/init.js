@@ -19,6 +19,9 @@ const onEditorChange = (content) => {
 
 const getSavedGist = async () => {
   const gistId = getUrlGistId()
+  if (!gistId) {
+    throw Error('No gist id')
+  }
   try {
     return await readGist(gistId)
   } catch (err) {
@@ -44,14 +47,12 @@ Promise.all(
   })
 
 // Load a gist, restore code after refresh, or load the default demo code
-if (getUrlGistId()) {
+if (getUrlGistId() || !sessionRestore()) {
   getSavedGist()
     .catch(() => fetch('./scheme/heaven.scm').then(resp => resp.text()))
     .then(code => {
       setContent(code)
     })
-} else {
-  sessionRestore()
 }
 
 window.addEventListener('unload', () => {

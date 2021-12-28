@@ -86,7 +86,9 @@ export const sessionRestore = () => {
   const content = sessionStorage.getItem(SESSION_KEY)
   if (content != null) {
     setContent(content)
+    return true
   }
+  return false
 }
 
 export const initEditor = (preloadedCode, onChange) => {
