@@ -82,7 +82,6 @@ const UserGists = ({ gists }) => {
     'files':{'rhythm.scm': ''}
   }], [])
 
-  const allGists = gists.concat(defaultGists)
   const initialId = getUrlGistId()
 
   const gistName = (gist, index) => {
@@ -91,14 +90,9 @@ const UserGists = ({ gists }) => {
   }
 
   const onChange = (e) => {
-    const index = e.target.value
-    const gistItem = allGists[index]
-
-    if (gistItem) {
-      //if (!confirm('Discard latest edits?')) return
-      setUrlGistId(gistItem.id)
-      location.reload() // @TODO: avoid reloading the page
-    }
+    const id = e.target.value
+    setUrlGistId(id)
+    location.reload() // @TODO: avoid reloading the page
   }
 
   return html`
@@ -107,13 +101,13 @@ const UserGists = ({ gists }) => {
         <option value=${-1}>Load a gist</option>
         ${gists.length ? html`<option disabled>─</option>` : null}
         ${gists.map((gist, index) => html`
-          <option value=${index} defaultSelected=${gist.id === initialId}>
+          <option value=${gist.id} defaultSelected=${gist.id === initialId}>
             ${gistName(gist, index)}
           </option>
         `)}
         <optgroup label="Examples">
           ${defaultGists.map((gist, index) => html`
-            <option value=${index} defaultSelected=${gist.id === initialId}>
+            <option value=${gist.id} defaultSelected=${gist.id === initialId}>
               ${gistName(gist)}
             </option>
           `)}
