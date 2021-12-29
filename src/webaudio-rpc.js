@@ -54,7 +54,7 @@ gambitWorker().addEventListener('message', (e) => {
 
     timeouts.push(
       setTimeout(() => {
-        gambitWorker().postMessage(`(${schemeExpr})` + '\r\n')
+        gambitWorker().postMessage(`(${schemeExpr})\r\n`)
       }, delayMs)
     )
 

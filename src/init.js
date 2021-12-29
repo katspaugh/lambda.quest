@@ -1,5 +1,5 @@
 import { gambitWorker, initTerminal } from './terminal.js'
-import { initEditor, sessionRestore, sessionSave, setContent } from './editor.js'
+import { initEditor, autocompleteLibs, sessionRestore, sessionSave, setContent } from './editor.js'
 import { drawReset } from './canvas.js'
 import { clearUrlGistId, getUrlGistId } from './url.js'
 import { initGistSaving } from './init-user-menu.js'
@@ -37,13 +37,16 @@ initGistSaving()
 // Preload Scheme libs
 Promise.all(
   [
+    fetch('./scheme/_helpers.scm'),
     fetch('./scheme/canvas.scm'),
-    fetch('./scheme/web-audio.scm')
+    fetch('./scheme/web-audio.scm'),
   ].map(x => x.then(resp => resp.text()))
 )
-  .then(([ canvasCode, audioCode ]) => {
-    gambitEval(canvasCode + audioCode)
-    initEditor(canvasCode + audioCode, onEditorChange)
+  .then(([ helpersCode, canvasCode, audioCode ]) => {
+    const allCode = helpersCode + canvasCode + audioCode
+    initEditor(onEditorChange)
+    gambitEval(allCode)
+    autocompleteLibs(allCode)
   })
 
 // Load a gist, restore code after refresh, or load the default demo code

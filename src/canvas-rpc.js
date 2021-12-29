@@ -30,5 +30,5 @@ drawOnClick((mouseX, mouseY) => {
   const scale = 2 // canvas is downscaled 2x
   const x = mouseX * scale
   const y = mouseY * scale
-  gambitWorker().postMessage(`(canvas-click ${x} ${y})` + '\r\n')
+  gambitWorker().postMessage(`(canvas-click ${x} ${y})\r\n`)
 })

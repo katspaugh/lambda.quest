@@ -1,24 +1,9 @@
-(define (canvas--stringify val)
-  (if (string? val) (string-append "\"" val "\"")
-      (if (number? val) (number->string val)
-          (symbol->string val))))
-
-(define (log msg . rest)
-  (jseval (string-append
-           "console.log('" msg "', "
-           (apply string-append
-                  (map
-                   (lambda (x) (string-append (canvas--stringify x) ", "))
-                   rest))
-           ")"))
-  (void))
-
 (define (canvas--eval command . rest)
   (jseval (string-append
            "postMessage([ 'canvas', '" command "', "
            (apply string-append
                   (map
-                   (lambda (x) (string-append (canvas--stringify x) ", "))
+                   (lambda (x) (string-append (stringify x) ", "))
                    rest))
            "])"))
   (void))

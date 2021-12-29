@@ -1,3 +1,5 @@
+;; Procedurally draw a smiley face in a loop
+
 (define π 3.141592653589793)
 
 (define (canvas-circle x y radius)

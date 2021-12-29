@@ -28,7 +28,6 @@
   (audio-set osc 'type (symbol->string type))
   osc)
 
-
 ;; Square osc at 100 Hz
 (define osc1 (osc-make 'square 100))
 (osc-detune osc1 (- (random-integer 20) 10))

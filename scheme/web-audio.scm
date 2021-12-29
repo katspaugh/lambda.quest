@@ -16,7 +16,7 @@
            "postMessage([ 'audio', "
            (apply string-append
                   (map
-                   (lambda (x) (string-append (audio--stringify x) ", "))
+                   (lambda (x) (string-append (stringify x) ", "))
                    args))
            "])"))
   (void))

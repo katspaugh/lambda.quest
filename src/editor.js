@@ -91,9 +91,64 @@ export const sessionRestore = () => {
   return false
 }
 
-export const initEditor = (preloadedCode, onChange) => {
-  preloadedKeywords = extractKeywords(preloadedCode)
+// @TODO: add a keyboard shortcut to eval code at point
+const getSexpAtPoint = (code, position) => {
+  let openIndex = null
+  let openCount = 0
+  let closeCount = 0
+  let inString = false
+  let inComment = false
 
+  for (let i = 0, len = code.length; i < len; i++) {
+    const char = code[i]
+
+    if (char === ';') {
+      inComment = true
+    }
+
+    if (inComment) {
+      if (char === '\n') {
+        inComment = false
+      } else {
+        continue
+      }
+    }
+
+    if (char === '"') {
+      inString = !inString
+    }
+
+    if (inString) continue
+
+    const isOpen = char === '('
+    const isClose = char === ')'
+
+    if (isOpen) openCount += 1
+    if (isClose) closeCount += 1
+
+    if (isOpen && openIndex == null) {
+      openIndex = i
+    }
+
+    if (openCount > 0 && openCount === closeCount) {
+      if (position >= openIndex && position <= i) {
+        return code.slice(openIndex, i + 1)
+      }
+
+      openIndex = null
+      openCount = 0
+      closeCount = 0
+    }
+  }
+
+  return null
+}
+
+export const autocompleteLibs = (code) => {
+  preloadedKeywords = extractKeywords(code)
+}
+
+export const initEditor = (onChange) => {
   require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.32.0-dev.20211218/min/vs' } });
 
 	require(['vs/editor/editor.main'], () => {
@@ -118,12 +173,8 @@ export const initEditor = (preloadedCode, onChange) => {
 
       debounce = setTimeout(() => {
         const value = model.getValue()
-        const openParens = value.match(/[(]/g) || []
-        const closeParens = value.match(/[)]/g) || []
-        if (openParens.length === closeParens.length) {
-          onChange(value)
-          userKeywords = extractKeywords(value)
-        }
+        onChange(value)
+        userKeywords = extractKeywords(value)
       }, 300)
     })
 
