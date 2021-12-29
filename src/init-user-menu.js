@@ -80,6 +80,9 @@ const UserGists = ({ gists }) => {
   }, {
     'id': '8eb332073b3b29ace1e2855dfdbad98f',
     'files':{'rhythm.scm': ''}
+  }, {
+    'id': 'ca42ff57437c5b3f609785aa3eba52d8',
+    'files':{'piano-roll.scm': ''}
   }], [])
 
   const initialId = getUrlGistId()
