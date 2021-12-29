@@ -24,7 +24,7 @@
 (define (audio--delay callback ms)
   (audio--eval (list "delay" callback ms)))
 
-(define audio-callbacks '())
+(define audio--callbacks '())
 
 (define-macro audio-timeout
   (lambda (duration . calls)
@@ -33,9 +33,9 @@
           ;; Callback is a symbol, just pass it
           `(audio--delay ,callback ,duration))
         ;; Callback is a list of expressions, create a lambda
-        `(let ((index (number->string (length audio-callbacks))))
-           ((set! audio-callbacks (append audio-callbacks (list (lambda () ,@calls))))
-            (audio--delay (string-append "(list-ref audio-callbacks " index ")") ,duration))))))
+        `(let ((index (number->string (length audio--callbacks))))
+           ((set! audio--callbacks (append audio--callbacks (list (lambda () ,@calls))))
+            (audio--delay (string-append "(list-ref audio--callbacks " index ")") ,duration))))))
 
 (define (audio-call id path . rest)
   (let ((new-id (audio--get-id)))

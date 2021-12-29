@@ -3,6 +3,16 @@
       (if (number? val) (number->string val)
           (symbol->string val))))
 
+(define (log msg . rest)
+  (jseval (string-append
+           "console.log('" msg "', "
+           (apply string-append
+                  (map
+                   (lambda (x) (string-append (canvas--stringify x) ", "))
+                   rest))
+           ")"))
+  (void))
+
 (define (canvas--eval command . rest)
   (jseval (string-append
            "postMessage([ 'canvas', '" command "', "
@@ -12,6 +22,9 @@
                    rest))
            "])"))
   (void))
+
+(define (canvas-click x y)
+  '(x y))
 
 (define (canvas-call method . rest)
   (apply canvas--eval (append (list "call" (symbol->string method)) rest)))

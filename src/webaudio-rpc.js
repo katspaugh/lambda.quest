@@ -12,7 +12,7 @@ const isBreakout = (obj) => {
 
 export const restartAudio = async () => {
   // Reset setTimeout callbacks
-  gambitWorker().postMessage(`(set! audio-callbacks '())\r\n`)
+  gambitWorker().postMessage(`(set! audio--callbacks '())\r\n`)
 
   // Clear timeoutes
   timeouts.forEach(id => clearTimeout(id))

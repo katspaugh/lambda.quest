@@ -1,5 +1,5 @@
 import { gambitWorker } from './terminal.js'
-import { draw, drawSleep, drawStartLoop } from './canvas.js'
+import { draw, drawSleep, drawStartLoop, drawOnClick } from './canvas.js'
 
 gambitWorker().addEventListener('message', (e) => {
   if (!Array.isArray(e.data) || e.data[0] !== 'canvas') {
@@ -24,4 +24,11 @@ gambitWorker().addEventListener('message', (e) => {
         drawStartLoop()
         break
   }
+})
+
+drawOnClick((mouseX, mouseY) => {
+  const scale = 2 // canvas is downscaled 2x
+  const x = mouseX * scale
+  const y = mouseY * scale
+  gambitWorker().postMessage(`(canvas-click ${x} ${y})` + '\r\n')
 })

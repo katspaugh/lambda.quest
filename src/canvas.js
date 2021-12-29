@@ -46,3 +46,9 @@ export const drawReset = () => {
   ctx.clearRect(0, 0, canvas.width, canvas.height)
   drawLoop()
 }
+
+export const drawOnClick = (callback) => {
+  canvas.addEventListener('click', (e) => {
+    callback(e.offsetX, e.offsetY)
+  })
+}

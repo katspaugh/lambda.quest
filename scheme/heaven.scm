@@ -1,6 +1,9 @@
 ;; Inspired by Paradise from Hundred Rabbits
 ;; https://100r.co/site/paradise.html
 
+
+;; Helpers
+
 (define (heaven-make name) (cons name (make-table)))
 
 (define heaven (cons (heaven-make 'heaven) '()))
@@ -11,25 +14,32 @@
 
 (define (heaven-contents) (map car (table->list (heaven-current))))
 
-(define (heaven-create name)
-  (table-set! (heaven-current) name (heaven-make name)))
-
 (define (heaven-find name)
   (table-ref (heaven-current) name))
 
+
+;; Commands
+
+;; Create a vessel
+(define (heaven-create name)
+  (table-set! (heaven-current) name (heaven-make name)))
+
+;; Enter a vessel
 (define (heaven-enter name)
   (set! heaven (cons (heaven-find name) heaven)))
 
+;; Leave a vessel
 (define (heaven-leave)
   (set! heaven (cdr heaven)))
 
+;; Become a vessel
 (define (heaven-become name)
   (set! heaven-me name)
   (if (not (heaven-find name))
       (heaven-create name)))
 
 
-;; Display code
+;; Rendering
 
 (define (heaven-log line-offset . rest)
   (canvas-setFont "70px serif")
