@@ -165,3 +165,19 @@ footer a {
   white-space: pre-line;
   animation: fadeIn 100ms ease-in;
 }
+
+.eval-decoration {
+  background: #CFB3B9;
+}
+
+@media (prefers-color-scheme: dark) {
+  .eval-decoration {
+    background: #792C3D;
+  }
+}
+
+kbd {
+  content: '⌨';
+  font-size: 1.2em;
+  margin-right: 0.2em;
+}

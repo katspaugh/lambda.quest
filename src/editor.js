@@ -1,6 +1,8 @@
+import { updateOrCreate } from './init-user-menu.js'
+
 let userKeywords = []
 let preloadedKeywords = []
-let editor = ''
+let editor = null
 
 const SESSION_KEY = 'LQ_editorContent'
 
@@ -132,7 +134,12 @@ const getSexpAtPoint = (code, position) => {
 
     if (openCount > 0 && openCount === closeCount) {
       if (position >= openIndex && position <= i) {
-        return code.slice(openIndex, i + 1)
+        const closeIndex = i + 1
+        return {
+          text: code.slice(openIndex, closeIndex),
+          start: openIndex,
+          end: closeIndex
+        }
       }
 
       openIndex = null
@@ -144,16 +151,117 @@ const getSexpAtPoint = (code, position) => {
   return null
 }
 
+const highlightCode = (range) => {
+  const decorations = editor.deltaDecorations(
+	  [],
+	  [
+		  {
+			  range,
+			  options: {
+				  inlineClassName: 'eval-decoration'
+			  }
+		  }
+	  ]
+  )
+
+  setTimeout(() => {
+    editor.deltaDecorations(decorations, [])
+  }, 200)
+}
+
+const initEvalAction = (monaco, onEval) => {
+  editor.addAction({
+	  // An unique identifier of the contributed action.
+	  id: 'eval-sexp-at-point',
+
+	  // A label of the action that will be presented to the user.
+	  label: 'Eval s-exp',
+
+	  // An optional array of keybindings for the action.
+	  keybindings: [
+			monaco.KeyMod.Shift | monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyX
+	  ],
+
+	  // A precondition for this action.
+	  precondition: null,
+
+	  // A rule to evaluate on top of the precondition in order to dispatch the keybindings.
+	  keybindingContext: null,
+
+	  contextMenuGroupId: 'navigation',
+
+	  contextMenuOrder: 1.5,
+
+	  run: (ed) => {
+      // Eval selected text
+      const model = ed.getModel()
+      const selectionRange = ed.getSelection()
+      const selection = model.getValueInRange(selectionRange)
+      if (selection) {
+        onEval(selection)
+        highlightCode(selectionRange)
+        return
+      }
+
+      // Eval s-exp at point
+      const offset = model.getOffsetAt(ed.getPosition())
+      const value = ed.getModel().getValue()
+      const form = getSexpAtPoint(value, offset)
+      if (form) {
+        onEval(form.text)
+        const starPos = model.getPositionAt(form.start)
+        const endPos = model.getPositionAt(form.end)
+        const range = {
+          startLineNumber: starPos.lineNumber,
+          endLineNumber: endPos.lineNumber,
+          startColumn: starPos.column,
+          endColumn: endPos.column
+        }
+        highlightCode(range)
+        return
+      }
+
+      // Eval the entire buffer
+      onEval(value)
+	  }
+  })
+}
+
+const initSaveAction = (monaco, onSave) => {
+  editor.addAction({
+	  // An unique identifier of the contributed action.
+	  id: 'save-as-gist',
+
+	  // A label of the action that will be presented to the user.
+	  label: 'Save code in a gist',
+
+	  // An optional array of keybindings for the action.
+	  keybindings: [
+			monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS
+	  ],
+
+	  // A precondition for this action.
+	  precondition: null,
+
+	  // A rule to evaluate on top of the precondition in order to dispatch the keybindings.
+	  keybindingContext: null,
+
+	  contextMenuGroupId: 'navigation',
+
+	  contextMenuOrder: 1.5,
+
+	  run: onSave
+  })
+}
+
 export const autocompleteLibs = (code) => {
   preloadedKeywords = extractKeywords(code)
 }
 
-export const initEditor = (onChange) => {
+export const initEditor = (onChange, onEval) => {
   require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.32.0-dev.20211218/min/vs' } });
 
 	require(['vs/editor/editor.main'], () => {
-    initAutocomplete(monaco)
-
     let theme = 'vs'
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
       theme = 'vs-dark'
@@ -173,12 +281,20 @@ export const initEditor = (onChange) => {
 
       debounce = setTimeout(() => {
         const value = model.getValue()
-        onChange(value)
         userKeywords = extractKeywords(value)
+
+        // Re-eval the whole buffer if the entire content was changed
+        if (e.changes[0].text === value) {
+          onChange(value)
+        }
       }, 300)
     })
 
     // Export
     editor = monacoEditor
+
+    initEvalAction(monaco, onEval)
+    initSaveAction(monaco, updateOrCreate)
+    initAutocomplete(monaco)
   })
 }

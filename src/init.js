@@ -1,5 +1,5 @@
 import { gambitWorker, initTerminal } from './terminal.js'
-import { initEditor, autocompleteLibs, sessionRestore, sessionSave, setContent } from './editor.js'
+import { initEditor, autocompleteLibs, sessionRestore, sessionSave, setContent, getContent } from './editor.js'
 import { drawReset } from './canvas.js'
 import { clearUrlGistId, getUrlGistId } from './url.js'
 import { initGistSaving } from './init-user-menu.js'
@@ -8,13 +8,21 @@ import { restartAudio } from './webaudio-rpc.js'
 import './canvas-rpc.js'
 
 const gambitEval = (code) => {
-  gambitWorker().postMessage(code + '\r\n')
+  gambitWorker().postMessage(`${code}\r\n`)
 }
 
 const onEditorChange = (content) => {
   drawReset()
   restartAudio()
   gambitEval(content)
+}
+
+const onEditorEval = (sexp) => {
+  if (sexp === getContent()) {
+    onEditorChange(sexp)
+  } else {
+    gambitEval(sexp)
+  }
 }
 
 const getSavedGist = async () => {
@@ -32,6 +40,7 @@ const getSavedGist = async () => {
 }
 
 initTerminal()
+initEditor(onEditorChange, onEditorEval)
 initGistSaving()
 
 // Preload Scheme libs
@@ -44,7 +53,6 @@ Promise.all(
 )
   .then(([ helpersCode, canvasCode, audioCode ]) => {
     const allCode = helpersCode + canvasCode + audioCode
-    initEditor(onEditorChange)
     gambitEval(allCode)
     autocompleteLibs(allCode)
   })

@@ -10,6 +10,22 @@ import { getUrlGistId, setUrlGistId } from './url.js'
 const html = htm.bind(h)
 let alert = console.log
 
+export const updateOrCreate = () => {
+  const gistId = getUrlGistId()
+
+  if (isAuthed() && gistId) {
+    getAllGists().then(gists => {
+      if (gists.some(item => item.id === gistId)) {
+        onUpdateClick()
+      } else {
+        onSaveClick()
+      }
+    })
+  } else {
+    onSaveClick()
+  }
+}
+
 const onSaveClick = (onDone) => {
   const currentCode = getContent()
 
@@ -195,15 +211,18 @@ const Menu = () => {
     <${Alert} text=${alertText} onClick=${() => setAlertText('')} />
   ` : null
 
+  const isMac = navigator.platform.startsWith('Mac')
+
   return html`
     <div>
-      <${UserInfo} name=${userInfo.login} avatar=${userInfo.avatar_url} />
-      ${logoutLink}
+      Press ⇧${isMac ? '⌘' : 'Ctrl+'}X to eval
     </div>
 
     <div>
+      <${UserInfo} name=${userInfo.login} avatar=${userInfo.avatar_url} />
       <${UserGists} gists=${gists} />
       ${actionLinks}
+      ${logoutLink}
       ${notification}
     </div>
   `
