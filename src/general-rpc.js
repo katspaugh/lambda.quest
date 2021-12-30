@@ -12,8 +12,6 @@ export const reset = () => {
 }
 
 gambitWorker().addEventListener('message', (e) => {
-  if (Array.isArray(e.data)) console.log(e.data)
-
   if (!Array.isArray(e.data) || e.data[0] !== 'setTimeout') return
 
   const schemeExpr = e.data[1]

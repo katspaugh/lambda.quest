@@ -9,12 +9,11 @@ const isBreakout = (obj) => {
     || obj instanceof Node
 }
 
-export const restartAudio = async () => {
+export const restartAudio = () => {
   // Kill the previous audio
   const ctx = objects.id_0
   if (ctx) {
-    //ctx.destination.disconnect()
-    await ctx.close()
+    ctx.close()
     objects = {}
   }
 }

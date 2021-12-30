@@ -1,3 +1,5 @@
+import { gambitWorker } from './terminal.js'
+
 const canvas = document.getElementById('canvas')
 const ctx = canvas.getContext('2d')
 
@@ -44,6 +46,7 @@ export const drawReset = () => {
   queue.length = 0
   looping = false
   ctx.clearRect(0, 0, canvas.width, canvas.height)
+  gambitWorker().postMessage('(set! canvas-click (lambda (x y) (void)))\r\n')
   drawLoop()
 }
 

@@ -1,10 +1,10 @@
 import { h, render } from 'https://unpkg.com/htm/preact/index.mjs?module'
 import { useState, useEffect, useMemo } from 'https://unpkg.com/preact/hooks/dist/hooks.mjs?module'
 import htm from 'https://unpkg.com/htm?module'
-import { createGist, updateGist, getUser, getAllGists } from './gists.js'
+import { createGist, updateGist, getUser, getAllGists, readGist } from './gists.js'
 import { isAuthed, logout, tryLogin } from './github-auth.js'
-import { getContent } from './editor.js'
-import { getUrlGistId, setUrlGistId } from './url.js'
+import { getContent, setContent } from './editor.js'
+import { clearUrlGistId, getUrlGistId, setUrlGistId } from './url.js'
 
 // Initialize htm with Preact
 const html = htm.bind(h)
@@ -111,7 +111,14 @@ const UserGists = ({ gists }) => {
   const onChange = (e) => {
     const id = e.target.value
     setUrlGistId(id)
-    location.reload() // @TODO: avoid reloading the page
+
+    readGist(id)
+      .then(setContent)
+      .catch(err => {
+        clearUrlGistId()
+        console.log('Error reading the gist:', err.message)
+        alert(`Error reading the gist\n${err.info ? err.info.message : err.message}`)
+      })
   }
 
   return html`
