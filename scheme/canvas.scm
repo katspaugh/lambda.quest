@@ -1,12 +1,5 @@
 (define (canvas--eval command . rest)
-  (jseval (string-append
-           "postMessage([ 'canvas', '" command "', "
-           (apply string-append
-                  (map
-                   (lambda (x) (string-append (stringify x) ", "))
-                   rest))
-           "])"))
-  (void))
+  (jseval-msg "canvas" (append (list command) rest)))
 
 (define (canvas-click x y)
   '(x y))

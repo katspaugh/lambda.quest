@@ -43,11 +43,11 @@
 ;; Start the oscs
 (audio-call! osc1 'start 0)
 
-(audio-timeout
+(timeout
  1000
  (audio-call! osc2 'start 0))
 
-(audio-timeout
+(timeout
  2000
  (audio-call! osc3 'start 0))
 

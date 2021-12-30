@@ -2,9 +2,7 @@ import { gambitWorker } from './terminal.js'
 import { draw, drawSleep, drawStartLoop, drawOnClick } from './canvas.js'
 
 gambitWorker().addEventListener('message', (e) => {
-  if (!Array.isArray(e.data) || e.data[0] !== 'canvas') {
-    return
-  }
+  if (!Array.isArray(e.data) || e.data[0] !== 'canvas') return
 
   const command = e.data[1]
   const arg1 = e.data[2]

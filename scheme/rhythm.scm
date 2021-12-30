@@ -21,7 +21,7 @@
   (canvas-call 'fillRect 200 200 30 30)
   (osc-pluck osc1-gain 0.1 300) ;; volume envelope
   (osc-pluck (audio-get osc1 'frequency) 800 200) ;; frequency envelope
-  (audio-timeout 400 osc-loop1))
+  (timeout 400 osc-loop1))
 (osc-loop1)
 
 ;; Melody
@@ -35,7 +35,7 @@
     (audio-set (audio-get osc2 'frequency) 'value (/ 1320 rand))
     (osc-envelope osc2-gain 0.1 200) ;; attack
     (osc-envelope osc2-gain 0.000001 (* 300 rand)) ;; decay
-    (audio-timeout 1600 osc-loop2)))
+    (timeout 1600 osc-loop2)))
 (osc-loop2)
 
 ;; Off-beat percussion
@@ -45,5 +45,5 @@
   (canvas-call 'fillRect 330 300 30 30)
   (audio-set (audio-get osc3 'frequency) 'value (* (random-integer 10) 110))
   (osc-pluck osc3-gain 0.05 300)
-  (audio-timeout 800 osc-loop3))
-(audio-timeout 300 osc-loop3)
+  (timeout 800 osc-loop3))
+(timeout 300 osc-loop3)

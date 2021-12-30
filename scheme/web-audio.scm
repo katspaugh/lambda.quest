@@ -6,36 +6,8 @@
 
 (define audio-ctx (audio--get-id))
 
-(define (audio--stringify val)
-  (if (string? val) (string-append "\"" val "\"")
-      (if (number? val) (number->string val)
-          (symbol->string val))))
-
 (define (audio--eval args)
-  (jseval (string-append
-           "postMessage([ 'audio', "
-           (apply string-append
-                  (map
-                   (lambda (x) (string-append (stringify x) ", "))
-                   args))
-           "])"))
-  (void))
-
-(define (audio--delay callback ms)
-  (audio--eval (list "delay" callback ms)))
-
-(define audio--callbacks '())
-
-(define-macro audio-timeout
-  (lambda (duration . calls)
-    (if (and (eq? 1 (length calls)) (symbol? (car calls)))
-        (let ((callback (symbol->string (car calls))))
-          ;; Callback is a symbol, just pass it
-          `(audio--delay ,callback ,duration))
-        ;; Callback is a list of expressions, create a lambda
-        `(let ((index (number->string (length audio--callbacks))))
-           ((set! audio--callbacks (append audio--callbacks (list (lambda () ,@calls))))
-            (audio--delay (string-append "(list-ref audio--callbacks " index ")") ,duration))))))
+  (jseval-msg "audio" args))
 
 (define (audio-call id path . rest)
   (let ((new-id (audio--get-id)))

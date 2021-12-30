@@ -21,7 +21,7 @@ export const initTerminal = () => {
     }
   })
 
-  terminal.write('# Loading a Sceme interpreter...')
+  terminal.write('# Loading the Scheme interpreter...')
 
   return terminal
 }

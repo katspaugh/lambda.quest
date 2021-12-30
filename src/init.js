@@ -5,6 +5,7 @@ import { clearUrlGistId, getUrlGistId } from './url.js'
 import { initGistSaving } from './init-user-menu.js'
 import { readGist } from './gists.js'
 import { restartAudio } from './webaudio-rpc.js'
+import { reset } from './general-rpc.js'
 import './canvas-rpc.js'
 
 const gambitEval = (code) => {
@@ -12,6 +13,7 @@ const gambitEval = (code) => {
 }
 
 const onEditorChange = (content) => {
+  reset()
   drawReset()
   restartAudio()
   gambitEval(content)
@@ -49,10 +51,11 @@ Promise.all(
     fetch('./scheme/_helpers.scm'),
     fetch('./scheme/canvas.scm'),
     fetch('./scheme/web-audio.scm'),
+    fetch('./scheme/osc.scm'),
   ].map(x => x.then(resp => resp.text()))
 )
-  .then(([ helpersCode, canvasCode, audioCode ]) => {
-    const allCode = helpersCode + canvasCode + audioCode
+  .then(([ helpersCode, canvasCode, audioCode, oscCode ]) => {
+    const allCode = helpersCode + canvasCode + audioCode + oscCode
     gambitEval(allCode)
     autocompleteLibs(allCode)
   })

@@ -1,7 +1,6 @@
 import { gambitWorker } from './terminal.js'
 
 let objects = {}
-let timeouts = []
 
 const isBreakout = (obj) => {
   return obj === window
@@ -11,16 +10,11 @@ const isBreakout = (obj) => {
 }
 
 export const restartAudio = async () => {
-  // Reset setTimeout callbacks
-  gambitWorker().postMessage(`(set! audio--callbacks '())\r\n`)
-
-  // Clear timeoutes
-  timeouts.forEach(id => clearTimeout(id))
-  timeouts = []
-
   // Kill the previous audio
-  if (objects.id_0) {
-    await objects.id_0.close()
+  const ctx = objects.id_0
+  if (ctx) {
+    //ctx.destination.disconnect()
+    await ctx.close()
     objects = {}
   }
 }
@@ -28,14 +22,11 @@ export const restartAudio = async () => {
 const OPS = {
   call: 'call',
   get: 'get',
-  set: 'set',
-  delay: 'delay'
+  set: 'set'
 }
 
 gambitWorker().addEventListener('message', (e) => {
-  if (!Array.isArray(e.data) || e.data[0] !== 'audio') {
-    return
-  }
+  if (!Array.isArray(e.data) || e.data[0] !== 'audio') return
 
   if (!objects.id_0) {
     try {
@@ -47,20 +38,6 @@ gambitWorker().addEventListener('message', (e) => {
   }
 
   const op = e.data[1]
-
-  if (op === OPS.delay) {
-    const schemeExpr = e.data[2]
-    const delayMs = e.data[3]
-
-    timeouts.push(
-      setTimeout(() => {
-        gambitWorker().postMessage(`(${schemeExpr})\r\n`)
-      }, delayMs)
-    )
-
-    return
-  }
-
   const callId = e.data[2]
   const returnId = e.data[3]
   const path = e.data[4]
