@@ -47,4 +47,4 @@
   (canvas-call 'fillText text x y))
 
 (define (canvas-clear)
-  (canvas-call 'clearRect 0 0 1000000 1000000))
+  (canvas-call 'clearRect -10000 -10000 20000 20000))

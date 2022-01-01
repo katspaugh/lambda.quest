@@ -1,6 +1,3 @@
-;; Main output
-(define osc-destination (audio-get audio-ctx 'destination))
-
 ;; Make an oscillator
 (define (osc-make type freq)
   (let ((osc (audio-call audio-ctx 'createOscillator)))
@@ -20,7 +17,7 @@
 (define (osc-make-vca)
   (let ((vca (audio-call audio-ctx 'createGain)))
     (audio-set (audio-get vca 'gain) 'value 0)
-    (audio-call! vca 'connect osc-destination)
+    (audio-call! vca 'connect (audio-get audio-ctx 'destination))
     vca))
 
 ;; Make a gain control

@@ -1,6 +1,6 @@
 import { gambitWorker } from './terminal.js'
 
-let objects = {}
+let nodes = {}
 
 const isBreakout = (obj) => {
   return obj === window
@@ -11,10 +11,9 @@ const isBreakout = (obj) => {
 
 export const restartAudio = () => {
   // Kill the previous audio
-  const ctx = objects.id_0
-  if (ctx) {
-    ctx.close()
-    objects = {}
+  if (nodes.id_0) {
+    nodes.id_0.close()
+    nodes = {}
   }
 }
 
@@ -27,9 +26,9 @@ const OPS = {
 gambitWorker().addEventListener('message', (e) => {
   if (!Array.isArray(e.data) || e.data[0] !== 'audio') return
 
-  if (!objects.id_0) {
+  if (!nodes.id_0) {
     try {
-      objects = { id_0: new (window.AudioContext || window.webkitAudioContext)() }
+      nodes.id_0 = new AudioContext()
     } catch (err) {
       console.log('Error creating a Web Audio context', err)
       return
@@ -42,12 +41,12 @@ gambitWorker().addEventListener('message', (e) => {
   const path = e.data[4]
   const rest = e.data.slice(5).map(arg => {
     if (typeof arg === 'string' && arg.startsWith('id_')) {
-      return objects[arg]
+      return nodes[arg]
     }
     return arg
   })
 
-  const obj = objects[callId]
+  const obj = nodes[callId]
   if (!obj) return
 
   let result
@@ -62,13 +61,13 @@ gambitWorker().addEventListener('message', (e) => {
   }
 
   if (result !== undefined && !isBreakout(result)) {
-    objects[returnId] = result
+    nodes[returnId] = result
   }
 })
 
 // Activate WebAudio on click
 document.addEventListener('click', () => {
-  const ctx = objects.id_0
+  const ctx = nodes.id_0
   if (ctx && ctx.state === 'suspended') {
     try {
       ctx.resume()

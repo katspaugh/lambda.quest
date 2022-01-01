@@ -3,6 +3,8 @@ import { gambitWorker } from './terminal.js'
 const canvas = document.getElementById('canvas')
 const ctx = canvas.getContext('2d')
 
+ctx.save()
+
 const queue = []
 const timeouts = []
 let looping = false
@@ -40,6 +42,7 @@ const drawLoop = () => {
 }
 
 export const drawReset = () => {
+  ctx.restore()
   cancelAnimationFrame(requestId)
   timeouts.forEach(id => clearTimeout(id))
   timeouts.length = 0

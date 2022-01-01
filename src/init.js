@@ -30,7 +30,7 @@ const onEditorEval = (sexp) => {
 const getSavedGist = async () => {
   const gistId = getUrlGistId()
   if (!gistId) {
-    throw Error('No gist id')
+    throw new Error('No gist id')
   }
   try {
     return await readGist(gistId)

@@ -18,11 +18,11 @@ export const updateOrCreate = () => {
       if (gists.some(item => item.id === gistId)) {
         onUpdateClick()
       } else {
-        onSaveClick()
+        onSaveClick(x => x)
       }
     })
   } else {
-    onSaveClick()
+    onSaveClick(x => x)
   }
 }
 
