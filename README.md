@@ -1,14 +1,16 @@
 Lambda Quest
 =================
 
-Live coding Scheme environment in the browser
+Live-coding Scheme environment in the browser
 
 Try it: https://lambda.quest
 
 ### Features
-* Live coding as you type
-* Asynchronous Canvas rendering loop
-* Animations using the `canvas-sleep` function
+* Gambit Scheme
+* Live evaluation of forms in the editor
+* Asynchronous Canvas rendering
+* Web Audio support
+* Animations and timeouts
 * Autocomplete in the editor
 * REPL
 
@@ -16,11 +18,7 @@ Try it: https://lambda.quest
 This project is based on the [work by Marc Feeley](https://github.com/feeley/gambit-in-emacs-in-the-browser/tree/gh-pages),
 the author of Gambit Scheme.
 
-The Scheme interpreter was compiled via [Emscripten](https://github.com/kripken/emscripten/wiki).
-
 The code editor is [Monaco](https://microsoft.github.io/monaco-editor/).
-
-The terminal emulator (the REPL) is [Xterm.js](https://xtermjs.org/)
 
 ## License
 MIT

@@ -1,3 +1,5 @@
+(load "https://lambda.quest/scheme/web-audio.scm")
+
 ;; Make an oscillator
 (define (osc-make type freq)
   (let ((osc (audio-call audio-ctx 'createOscillator)))
@@ -27,7 +29,7 @@
     (audio-get vca 'gain)))
 
 ;; Mark the audio start time
-(define (osc-now) (string->number (jseval "performance.now()")))
+(define (osc-now) (scm->js "performance.now()"))
 (define osc-start-time (osc-now))
 
 ;; Get current audio time

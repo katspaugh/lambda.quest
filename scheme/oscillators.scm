@@ -2,6 +2,8 @@
 
 ;; Click anywhere on the page to start the audio
 
+(load "https://lambda.quest/scheme/web-audio.scm")
+
 ;; Main output
 (define osc-destination (audio-get audio-ctx 'destination))
 

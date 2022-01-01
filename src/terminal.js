@@ -1,35 +1,20 @@
+let worker
+
 export const initTerminal = () => {
-  const terminal = new Terminal({
-    cols: 120,
-    rows: 10
-  })
-  const worker = gambitWorker()
-
-  terminal.open(document.getElementById('terminal'))
-
-  terminal.onKey((e) => {
-    worker.postMessage(e.key)
-  })
+  //const terminalDiv = document.querySelector('#terminal')
 
   worker.addEventListener('message', (e) => {
-    if (!Array.isArray(e.data)) {
-      terminal.write(e.data)
+    console.info(e.data)
 
-      if (e.data === '\r\n') {
-        terminal.scrollToBottom()
-      }
-    }
+    // const div = document.createElement('div')
+    // div.textContent = e.data
+    // terminalDiv.appendChild(div)
   })
-
-  terminal.write('# Loading the Scheme interpreter...')
-
-  return terminal
 }
 
-let worker
 export const gambitWorker = () => {
   if (!worker) {
-    worker = new Worker('./lib/gsi.js')
+    worker = new Worker('./src/worker.js')
   }
   return worker
 }

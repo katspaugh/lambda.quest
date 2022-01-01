@@ -1,8 +1,11 @@
 ;; Piano roll
 
+(load "https://lambda.quest/scheme/canvas.scm")
+(load "https://lambda.quest/scheme/osc.scm")
+
 ;; Piano voice
-(define osc1 (osc-make 'sawtooth 220))
-(define osc1-gain (osc-gain osc1))
+(define piano-osc (osc-make 'sawtooth 220))
+(define piano-osc-gain (osc-gain piano-osc))
 
 ;; Diatonic scale
 (define osc-cents '(0 200 400 500 700 900 1100))
@@ -19,8 +22,8 @@
 ;; PLay the note at a given position
 (define (osc-play-key key)
   (let ((cents (osc-key-to-cents key)))
-    (osc-detune osc1 cents)
-    (osc-pluck osc1-gain 0.2 600)))
+    (osc-detune piano-osc cents)
+    (osc-pluck piano-osc-gain 0.2 600)))
 
 ;; Handle clicks on the Canvas
 (define osc-click-handlers '()) ;; List of callbacks

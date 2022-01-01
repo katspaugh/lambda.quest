@@ -2,6 +2,9 @@
 
 ;; Click anywhere on the page to start the audio
 
+(load "https://lambda.quest/scheme/canvas.scm")
+(load "https://lambda.quest/scheme/osc.scm")
+
 ;; Kick drum
 (define osc1 (osc-make 'sine 110))
 (define osc1-gain (osc-gain osc1))

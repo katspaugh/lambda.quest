@@ -9,7 +9,7 @@ import { reset } from './general-rpc.js'
 import './canvas-rpc.js'
 
 const gambitEval = (code) => {
-  gambitWorker().postMessage(`${code}\r\n`)
+  gambitWorker().postMessage(code)
 }
 
 const onEditorChange = (content) => {
@@ -45,29 +45,28 @@ initTerminal()
 initEditor(onEditorChange, onEditorEval)
 initGistSaving()
 
-// Preload Scheme libs
-Promise.all(
-  [
-    fetch('./scheme/_helpers.scm'),
-    fetch('./scheme/canvas.scm'),
-    fetch('./scheme/web-audio.scm'),
-    fetch('./scheme/osc.scm'),
-  ].map(x => x.then(resp => resp.text()))
-)
-  .then(([ helpersCode, canvasCode, audioCode, oscCode ]) => {
-    const allCode = helpersCode + canvasCode + audioCode + oscCode
-    gambitEval(allCode)
-    autocompleteLibs(allCode)
-  })
 
-// Load a gist, restore code after refresh, or load the default demo code
-if (getUrlGistId() || !sessionRestore()) {
-  getSavedGist()
-    .catch(() => fetch('./scheme/heaven.scm').then(resp => resp.text()))
-    .then(code => {
-      setContent(code)
+const onFirstMessage = (e) => {
+  if (!(typeof e.data === 'string' && e.data.startsWith('Gambit v4.9.4'))) return
+
+  gambitWorker().removeEventListener('message', onFirstMessage)
+
+  fetch('./scheme/_helpers.scm')
+    .then(resp => resp.text())
+    .then((helpersCode) => {
+      autocompleteLibs(helpersCode)
+      gambitEval(helpersCode)
     })
+
+  // Load a gist, restore code after refresh, or load the default demo code
+  if (getUrlGistId() || !sessionRestore()) {
+    getSavedGist()
+      .catch(() => fetch('./scheme/heaven.scm').then(resp => resp.text()))
+      .then(setContent)
+  }
 }
+
+gambitWorker().addEventListener('message', onFirstMessage)
 
 window.addEventListener('unload', () => {
   if (!getUrlGistId()) {

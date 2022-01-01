@@ -86,19 +86,19 @@ const UserInfo = ({ name, avatar }) => {
 const UserGists = ({ gists }) => {
   const defaultGists = useMemo(() => [{
     'id':'2e53d106a5e27b49fcc50eb89c149078',
-    'files': {'heaven.scm': ''}
+    'files': {'☁️ heaven.scm': ''}
   }, {
     'id':'b4abd68b853cf24009e8ff1c0b63d9f6',
-    'files':{'smiley-face.scm': ''}
+    'files':{'😃 smiley-face.scm': ''}
   }, {
     'id': '1c236778faf87ed2ffceee825e6ca333',
-    'files':{'oscillators.scm': ''}
+    'files':{'🎶 oscillators.scm': ''}
   }, {
     'id': '8eb332073b3b29ace1e2855dfdbad98f',
-    'files':{'rhythm.scm': ''}
+    'files':{'🥁 rhythm.scm': ''}
   }, {
     'id': 'ca42ff57437c5b3f609785aa3eba52d8',
-    'files':{'piano-roll.scm': ''}
+    'files':{'🎹 piano-roll.scm': ''}
   }], [])
 
   const initialId = getUrlGistId()

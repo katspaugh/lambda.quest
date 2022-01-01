@@ -4,7 +4,7 @@
           (symbol->string val))))
 
 (define (log msg . rest)
-  (jseval (string-append
+  (scm->js (string-append
            "console.log('" msg "', "
            (apply string-append
                   (map
@@ -14,7 +14,7 @@
   (void))
 
 (define (jseval-msg command args)
-  (jseval (string-append
+  (scm->js (string-append
            "postMessage([ '" command "', "
            (apply string-append
                   (map
@@ -35,3 +35,9 @@
         `(let ((index (number->string (length timeout--callbacks))))
            (set! timeout--callbacks (append timeout--callbacks (list (lambda () (begin ,@calls)))))
            (jseval-msg "setTimeout" (list (string-append "(list-ref timeout--callbacks " index ")") ,duration))))))
+
+(module-whitelist-add! "gist.githubusercontent.com")
+(module-whitelist-add! "localhost:8000")
+(module-whitelist-add! "lambda.quest")
+(module-search-order-add! "http://localhost:8000/scheme")
+(module-search-order-add! "https://lambda.quest/scheme")
