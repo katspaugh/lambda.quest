@@ -93,7 +93,6 @@ export const sessionRestore = () => {
   return false
 }
 
-// @TODO: add a keyboard shortcut to eval code at point
 const getSexpAtPoint = (code, position) => {
   let openIndex = null
   let openCount = 0
@@ -198,7 +197,12 @@ const initEvalAction = (monaco, onEval) => {
       const selectionRange = ed.getSelection()
       const selection = model.getValueInRange(selectionRange)
       if (selection) {
-        onEval(selection)
+        const form = getSexpAtPoint(selection, 0)
+        if (form) {
+          onEval(form.text)
+        } else {
+          onEval(selection)
+        }
         highlightCode(selectionRange)
         return
       }
@@ -220,9 +224,6 @@ const initEvalAction = (monaco, onEval) => {
         highlightCode(range)
         return
       }
-
-      // Eval the entire buffer
-      onEval(value)
 	  }
   })
 }
@@ -254,11 +255,15 @@ const initSaveAction = (monaco, onSave) => {
   })
 }
 
+const isMatchingParens = (content) => {
+  return (content.match(/[(]/g) || []).length === (content.match(/[)]/g) || []).length
+}
+
 export const autocompleteLibs = (code) => {
   preloadedKeywords = extractKeywords(code)
 }
 
-export const initEditor = (onChange, onEval) => {
+export const initEditor = (onEval, onSetContent) => {
   require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.32.0-dev.20211218/min/vs' } });
 
 	require(['vs/editor/editor.main'], () => {
@@ -283,9 +288,8 @@ export const initEditor = (onChange, onEval) => {
         const value = model.getValue()
         userKeywords = extractKeywords(value)
 
-        // Re-eval the whole buffer if the entire content was changed
-        if (e.changes[0].text === value) {
-          onChange(value)
+        if (e.changes[0].text === value && isMatchingParens(value)) {
+          onSetContent()
         }
       }, 300)
     })

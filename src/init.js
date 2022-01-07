@@ -12,19 +12,15 @@ const gambitEval = (code) => {
   gambitWorker().postMessage(code)
 }
 
-const onEditorChange = (content) => {
+const onSetContent = () => {
   reset()
   drawReset()
   restartAudio()
-  gambitEval(content)
+  gambitEval(getContent())
 }
 
 const onEditorEval = (sexp) => {
-  if (sexp === getContent()) {
-    onEditorChange(sexp)
-  } else {
-    gambitEval(sexp)
-  }
+  gambitEval(sexp)
 }
 
 const getSavedGist = async () => {
@@ -40,11 +36,6 @@ const getSavedGist = async () => {
     throw err
   }
 }
-
-initTerminal()
-initEditor(onEditorChange, onEditorEval)
-initGistSaving()
-
 
 const onFirstMessage = (e) => {
   if (!(typeof e.data === 'string' && e.data.startsWith('Gambit v4.9.4'))) return
@@ -79,6 +70,10 @@ window.addEventListener('unload', () => {
     sessionSave()
   }
 })
+
+initTerminal()
+initEditor(onEditorEval, onSetContent)
+initGistSaving()
 
 
 
