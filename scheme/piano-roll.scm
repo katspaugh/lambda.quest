@@ -1,6 +1,5 @@
 ;; Piano roll
 
-(load "https://lambda.quest/scheme/canvas.scm")
 (load "https://lambda.quest/scheme/osc.scm")
 
 ;; Piano voice

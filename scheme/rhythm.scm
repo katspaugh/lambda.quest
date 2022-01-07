@@ -2,7 +2,6 @@
 
 ;; Click anywhere on the page to start the audio
 
-(load "https://lambda.quest/scheme/canvas.scm")
 (load "https://lambda.quest/scheme/osc.scm")
 
 ;; Kick drum

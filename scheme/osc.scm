@@ -1,5 +1,3 @@
-(load "https://lambda.quest/scheme/web-audio.scm")
-
 ;; Make an oscillator
 (define (osc-make type freq)
   (let ((osc (audio-call audio-ctx 'createOscillator)))

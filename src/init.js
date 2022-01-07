@@ -51,11 +51,17 @@ const onFirstMessage = (e) => {
 
   gambitWorker().removeEventListener('message', onFirstMessage)
 
-  fetch('./scheme/_helpers.scm')
-    .then(resp => resp.text())
-    .then((helpersCode) => {
-      autocompleteLibs(helpersCode)
-      gambitEval(helpersCode)
+  Promise.all(
+    [
+      './scheme/_helpers.scm',
+      './scheme/canvas.scm',
+      './scheme/web-audio.scm',
+    ].map(url => fetch(url).then(resp => resp.text()))
+  )
+    .then(([ helpersCode, canvasCode, audioCode ]) => {
+      const allLibs = helpersCode + canvasCode + audioCode
+      autocompleteLibs(allLibs)
+      gambitEval(allLibs)
     })
 
   // Load a gist, restore code after refresh, or load the default demo code

@@ -1,8 +1,6 @@
 ;; Inspired by Paradise from Hundred Rabbits
 ;; https://100r.co/site/paradise.html
 
-(load "https://lambda.quest/scheme/canvas.scm")
-
 ;; Helpers
 
 (define (heaven-make name) (cons name (make-table)))
