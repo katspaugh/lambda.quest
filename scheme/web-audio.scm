@@ -11,16 +11,16 @@
 
 (define (audio-call id path . rest)
   (let ((new-id (audio--get-id)))
-    (audio--eval (append (list "call" id new-id (symbol->string path)) rest))
+    (audio--eval (append (list "call" id new-id path) rest))
     new-id))
 
 (define (audio-call! id path . rest)
-  (audio--eval (append (list "call" id "" (symbol->string path)) rest)))
+  (audio--eval (append (list "call" id "" path) rest)))
 
 (define (audio-get id path)
   (let ((new-id (audio--get-id)))
-    (audio--eval (list "get" id new-id (symbol->string path)))
+    (audio--eval (list "get" id new-id path))
     new-id))
 
 (define (audio-set id path val)
-  (audio--eval (list "set" id "" (symbol->string path) val)))
+  (audio--eval (list "set" id "" path val)))

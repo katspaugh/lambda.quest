@@ -2,8 +2,6 @@
 
 ;; Click anywhere on the page to start the audio
 
-(load "https://lambda.quest/scheme/web-audio.scm")
-
 ;; Main output
 (define osc-destination (audio-get audio-ctx 'destination))
 
@@ -44,17 +42,7 @@
 
 ;; Start the oscs
 (audio-call! osc1 'start 0)
-
-(timeout
- 1000
- (audio-call! osc2 'start 0))
-
-(timeout
- 2000
- (audio-call! osc3 'start 0))
-
-;; You can now live-program the oscillators from the REPL
-;; E.g. type:
-;;
-;; (osc-detune osc1 9)
-;; (osc-waveform osc2 'sine)
+(timeout 1000)
+(audio-call! osc2 'start 0)
+(timeout 1000)
+(audio-call! osc3 'start 0)

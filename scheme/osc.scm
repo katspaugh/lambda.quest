@@ -27,7 +27,7 @@
     (audio-get vca 'gain)))
 
 ;; Mark the audio start time
-(define (osc-now) (scm->js "performance.now()"))
+(define (osc-now) \performance.now())
 (define osc-start-time (osc-now))
 
 ;; Get current audio time

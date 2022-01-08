@@ -5,7 +5,6 @@ import { clearUrlGistId, getUrlGistId } from './url.js'
 import { initGistSaving } from './init-user-menu.js'
 import { readGist } from './gists.js'
 import { restartAudio } from './webaudio-rpc.js'
-import { reset } from './general-rpc.js'
 import './canvas-rpc.js'
 
 const gambitEval = (code) => {
@@ -13,7 +12,6 @@ const gambitEval = (code) => {
 }
 
 const onSetContent = () => {
-  reset()
   drawReset()
   restartAudio()
   gambitEval(getContent())

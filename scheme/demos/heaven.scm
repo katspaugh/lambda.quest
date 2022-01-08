@@ -43,11 +43,11 @@
 (define (heaven-log line-offset . rest)
   (canvas-setFont "70px serif")
   (canvas-fillText (apply string-append rest) 30 (* 150 line-offset))
-  (canvas-sleep 1))
+  (timeout 1000))
 
 (define (heaven-log-all)
   (canvas-clear)
-  (canvas-sleep 0.5)
+  (timeout 500)
 
   (let ((who (symbol->string heaven-me))
         (where (symbol->string (car (car heaven)))))
@@ -62,16 +62,16 @@
              (set! count (+ 1 count))
              (heaven-log
               (+ 2 (* count 0.7))
-              " · " (symbol->string x)))
+              " - " (symbol->string x)))
            (heaven-contents))))
-    (canvas-sleep 2)))
+    (timeout 2000)))
 
 
 ;; Let's begin
 
 ;; 1. Intro
 (heaven-log 1 "Hello.")
-(canvas-sleep 2)
+(timeout 2000)
 (heaven-log-all)
 
 ;; 2. Create a ship
@@ -93,9 +93,3 @@
 (heaven-leave)
 (heaven-log-all)
 (heaven-log 5 "You're now free.")
-
-
-;; You can now interact with the REPL
-;; E.g. type:
-;; (heaven-become 'human)
-;; (heaven-log-all)

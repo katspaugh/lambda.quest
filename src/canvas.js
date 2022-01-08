@@ -1,60 +1,23 @@
-import { gambitWorker } from './terminal.js'
-
 const canvas = document.getElementById('canvas')
 const ctx = canvas.getContext('2d')
-
 ctx.save()
 
-const queue = []
-const timeouts = []
-let looping = false
-let requestId
+const clickCallbacks = []
 
-const drawQueue = () => {
-  return queue.reduce((prev, next) => prev.then(next), Promise.resolve())
-}
-
-const drawQueueAdd = (callback) => {
-  return queue.push(() => callback().then(() => !looping && queue.shift()))
-}
-
-export const draw = (callback) => {
-  drawQueueAdd(() => new Promise(resolve => {
-    callback(ctx)
-    resolve()
-  }))
-}
-
-export const drawSleep = (seconds) => {
-  drawQueueAdd(() => new Promise(resolve => {
-    timeouts.push(setTimeout(resolve, seconds * 1000))
-  }))
-}
-
-export const drawStartLoop = () => {
-  draw(() => looping = true)
-}
-
-const drawLoop = () => {
-  requestId = window.requestAnimationFrame(() => {
-    drawQueue().then(drawLoop)
-  })
-}
+export const getCtx = () => ctx
 
 export const drawReset = () => {
   ctx.restore()
-  cancelAnimationFrame(requestId)
-  timeouts.forEach(id => clearTimeout(id))
-  timeouts.length = 0
-  queue.length = 0
-  looping = false
   ctx.clearRect(0, 0, canvas.width, canvas.height)
-  gambitWorker().postMessage('(set! canvas-click (lambda (x y) (void)))\r\n')
-  drawLoop()
+  clickCallbacks.length = 0
 }
 
-export const drawOnClick = (callback) => {
-  canvas.addEventListener('click', (e) => {
-    callback(e.offsetX, e.offsetY)
-  })
+export const addOnClick = (callback) => clickCallbacks.push(callback)
+
+canvas.onclick = (e) => {
+  const scale = canvas.width / canvas.clientWidth
+  const x = Math.round(e.offsetX * scale)
+  const y = Math.round(e.offsetY * scale)
+
+  clickCallbacks.forEach(cb => cb(x, y))
 }

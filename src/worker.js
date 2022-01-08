@@ -1,21 +1,16 @@
 self.confirm = () => true
 
-const decoder = new TextDecoder()
+self.window = self
 
-self.g_scm2host = (obj) => {
-  const arr = new Uint8Array(obj.a)
-  const msg = decoder.decode(arr)
-  const result = eval(msg)
-  return typeof result === 'number' ? result : void 0
-}
+self.sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms))
 
-self.g_host2scm = (obj) => obj
-
+// Import the Gambit VM
 self.importScripts('/lib/VM.min.js')
 
 // Get an instance of Device_basic_console
 const dev = _os_device_from_basic_console()
 
+// Adjust the console for async i/o
 dev.use_async_input = () => true
 
 dev.output_add_buffer = (buffer) => {
@@ -43,4 +38,5 @@ self.onmessage = (e) => {
   _os_condvar_ready_set(condvar_scm, true);
 }
 
-  _program_start()
+// Start the Scheme interpreter
+_program_start()

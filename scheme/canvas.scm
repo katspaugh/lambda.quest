@@ -1,20 +1,17 @@
-(define (canvas--eval command . rest)
-  (jseval-msg "canvas" (append (list command) rest)))
-
-(define (canvas-click x y)
-  '(x y))
+(define (canvas--eval . rest)
+  (jseval-msg "canvas" rest))
 
 (define (canvas-call method . rest)
-  (apply canvas--eval (append (list "call" (symbol->string method)) rest)))
+  (apply canvas--eval (append (list "call" method) rest)))
 
 (define (canvas-set prop value)
-  (canvas--eval "set" (symbol->string prop) value))
+  (canvas--eval "set" prop value))
 
-(define (canvas-sleep seconds)
-  (canvas--eval "sleep" seconds))
+(define (canvas-onclick callback)
+  (canvas--eval "onclick" (symbol->string callback)))
 
-(define (canvas-loop)
-  (canvas--eval "loop"))
+(define (canvas-clear)
+  (canvas-call 'clearRect -10000 -10000 20000 20000))
 
 (define (canvas-beginPath)
   (canvas-call 'beginPath))
@@ -45,6 +42,3 @@
 
 (define (canvas-fillText text x y)
   (canvas-call 'fillText text x y))
-
-(define (canvas-clear)
-  (canvas-call 'clearRect -10000 -10000 20000 20000))
