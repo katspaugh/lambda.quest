@@ -23,6 +23,6 @@
   (canvas-closePath)
   (canvas-stroke))
 
-(draw-smiley-face 0 0)
+(draw-smiley-face 400 400)
 
 (canvas-onclick 'draw-smiley-face)
