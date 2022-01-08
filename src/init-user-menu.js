@@ -139,7 +139,7 @@ const UserGists = ({ gists }) => {
 
 const Alert = (props) => {
   return html`
-    <div class="alert" onClick=${props.onClick}>${props.text}</div>
+    <div class="alert">${props.text}</div>
   `
 }
 
@@ -162,6 +162,18 @@ const Menu = () => {
     e.preventDefault()
     callback(setGistId)
   })
+
+  useEffect(() => {
+    if (!alertText) return
+
+    const onClick = () => setAlertText('')
+
+    document.addEventListener('click', onClick, { once: true })
+
+    return () => {
+      document.removeEventListener('click', onClick)
+    }
+  }, [alertText, setAlertText])
 
   useEffect(() => {
     const onLogin = () => {
@@ -209,7 +221,7 @@ const Menu = () => {
   ` : null
 
   const notification = alertText ? html`
-    <${Alert} text=${alertText} onClick=${() => setAlertText('')} />
+    <${Alert} text=${alertText} />
   ` : null
 
   const isMac = navigator.platform.startsWith('Mac')
