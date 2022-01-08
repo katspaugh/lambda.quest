@@ -56,7 +56,7 @@ const onFirstMessage = (e) => {
   // Load a gist, restore code after refresh, or load the default demo code
   if (getUrlGistId() || !sessionRestore()) {
     getSavedGist()
-      .catch(() => fetch('./scheme/heaven.scm').then(resp => resp.text()))
+      .catch(() => fetch('./scheme/demos/heaven.scm').then(resp => resp.text()))
       .then(setContent)
   }
 }

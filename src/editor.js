@@ -86,7 +86,7 @@ export const sessionSave = () => {
 
 export const sessionRestore = () => {
   const content = sessionStorage.getItem(SESSION_KEY)
-  if (content != null) {
+  if (content) {
     setContent(content)
     return true
   }
