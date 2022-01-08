@@ -7,6 +7,9 @@
 
 (define (timeout ms) \sleep(`ms))
 
+(define (load* path)
+  (load (string-append \location.protocol "//" \location.host path)))
+
 (module-whitelist-add! "gist.githubusercontent.com")
 (module-whitelist-add! "localhost:8000")
 (module-whitelist-add! "lambda.quest")

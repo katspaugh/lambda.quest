@@ -94,9 +94,9 @@ const UserGists = ({ gists }) => {
     'id': '1c236778faf87ed2ffceee825e6ca333',
     'files':{'🎶 oscillators.scm': ''}
   }, {
-  //   'id': '8eb332073b3b29ace1e2855dfdbad98f',
-  //   'files':{'🥁 rhythm.scm': ''}
-  // }, {
+    'id': '8eb332073b3b29ace1e2855dfdbad98f',
+    'files':{'🥁 rhythm.scm': ''}
+  }, {
     'id': 'ca42ff57437c5b3f609785aa3eba52d8',
     'files':{'🎹 piano-roll.scm': ''}
   }], [])
@@ -110,6 +110,7 @@ const UserGists = ({ gists }) => {
 
   const onChange = (e) => {
     const id = e.target.value
+    if (id === -1) return
     setUrlGistId(id)
     location.reload()
   }

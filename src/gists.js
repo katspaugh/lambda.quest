@@ -73,9 +73,11 @@ export const createGist = (content) => {
   })
 }
 
-export const updateGist = (id, content) => {
+export const updateGist = async (id, content) => {
   const token = auth()
-  const fileName = getFileName(content)
+
+  const gist = await fetchJson(`${GISTS_API_URL}/${id}`)
+  const fileName = Object.keys(gist.files)[0]
 
   return fetchJson(`${GISTS_API_URL}/${id}`, {
     method: 'PATCH',

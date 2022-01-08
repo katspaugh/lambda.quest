@@ -1,6 +1,6 @@
 ;; Piano roll
 
-(load "https://lambda.quest/scheme/osc.scm")
+(load* "/scheme/osc.scm")
 
 ;; Piano voice
 (define piano-osc (osc-make 'sawtooth 220))
