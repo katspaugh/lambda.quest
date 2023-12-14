@@ -3,7 +3,7 @@ Lambda Quest
 
 Live-coding Scheme environment in the browser
 
-Try it: https://lambda.quest
+Try it: https://lambda-quest.pages.dev
 
 ### Features
 * Gambit Scheme
